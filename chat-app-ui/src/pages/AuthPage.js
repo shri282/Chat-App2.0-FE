@@ -16,14 +16,14 @@ function AuthPage() {
     };
   
     return (
-        <Container sx={{ width: '100%', typography: 'body1', margin:'250px', marginLeft: '500px'}}>
-            <Box sx={{ width: '44%', backgroundColor: 'white', marginBottom:'10px', padding: '8px', fontSize:'20px' , display: 'flex', justifyContent: 'center'}}>CHAT-APP</Box>
+        <Container sx={{ width: '100%', typography: 'body1', margin:'250px', marginLeft: '350px', marginTop:"100px"}}>
+            <Box sx={{ width: '44%', backgroundColor: 'white', marginBottom:'10px', padding: '8px', fontSize:'20px' , display: 'flex', justifyContent: 'center', fontWeight:800, color:'grey' }}>CHAT-APP</Box>
             <Box sx={{ width: '45%', typography: 'body1', backgroundColor: 'white'}}>
                 <TabContext value={value}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'center'}}>
                     <TabList onChange={handleChange} aria-label="lab API tabs example">
-                    <Tab label="Item One" value="1" />
-                    <Tab label="Item Two" value="2" />
+                    <Tab label="Login" value="1" />
+                    <Tab label="SignUp" value="2" />
                     </TabList>
                 </Box>
                 <TabPanel value="1"><Login></Login></TabPanel>

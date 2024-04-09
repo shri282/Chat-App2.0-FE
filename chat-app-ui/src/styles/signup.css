@@ -1,0 +1,65 @@
+.formcontainer {
+    max-width: 450px;
+    margin: 0 auto;
+    border-radius: 5px;
+}
+
+.formcontainer form {
+    display: flex;
+    flex-direction: column;
+}
+
+.formcontainer label {
+    font-size: 16px;
+    font-weight: 300;
+    margin-bottom: 5px;
+    color: black;
+}
+
+.form-fields {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+
+.formcontainer input,
+.formcontainer button {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.formcontainer button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.formcontainer button:hover {
+    background-color: #0056b3;
+}
+
+.formcontainer input[type="file"] {
+    padding: 0;
+}
+
+.formcontainer input[type="file"]::-webkit-file-upload-button {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.formcontainer input[type="file"]::-webkit-file-upload-button:hover {
+    background-color: #0056b3;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    text-align: left;
+    margin: 0;
+}
