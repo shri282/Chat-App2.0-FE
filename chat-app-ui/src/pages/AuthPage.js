@@ -9,6 +9,7 @@ import SignUp from '../components/SignUp';
 import { Container } from '@mui/material';
 
 function AuthPage() {
+
     const [value, setValue] = React.useState('1');
 
     const handleChange = (event, newValue) => {
@@ -20,18 +21,19 @@ function AuthPage() {
             <Box sx={{ width: '44%', backgroundColor: 'white', marginBottom:'10px', padding: '8px', fontSize:'20px' , display: 'flex', justifyContent: 'center', fontWeight:800, color:'grey' }}>CHAT-APP</Box>
             <Box sx={{ width: '45%', typography: 'body1', backgroundColor: 'white'}}>
                 <TabContext value={value}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'center'}}>
-                    <TabList onChange={handleChange} aria-label="lab API tabs example">
-                    <Tab label="Login" value="1" />
-                    <Tab label="SignUp" value="2" />
-                    </TabList>
-                </Box>
-                <TabPanel value="1"><Login></Login></TabPanel>
-                <TabPanel value="2"><SignUp></SignUp></TabPanel>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'center'}}>
+                        <TabList sx={{width:'100%', display:'flex', flexDirection:'row'}} onChange={handleChange} aria-label="lab API tabs example">
+                            <Tab sx={{width:'50%', '&.Mui-selected': { background: 'lightblue' }}} label="Login" value="1" />
+                            <Tab sx={{width:'50%', '&.Mui-selected': { background: 'lightblue' }}} label="SignUp" value="2" />
+                        </TabList>
+                    </Box>
+                    <TabPanel value="1"><Login></Login></TabPanel>
+                    <TabPanel value="2"><SignUp></SignUp></TabPanel>
                 </TabContext>
             </Box>
         </Container>
     );
+    
 }
 
 export default AuthPage
