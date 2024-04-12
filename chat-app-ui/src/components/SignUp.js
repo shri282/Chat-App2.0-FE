@@ -2,18 +2,70 @@ import React from "react";
 import "../styles/signup.css";
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
+import axios from "axios";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
 
 function SignUp() {
   const { register, handleSubmit, control, formState, watch } = useForm();
   const { errors } = formState;
+  const [toster, setToster] = React.useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
 
   const onSubmit = (data) => {
-    console.log(data);
+    const { username, email, password, upload } = data;
+
+    if(!username || !email || !password || !upload.length > 0) {
+      setToster({
+        open: true,
+        severity: "error",
+        message: "All fields are required",
+      });
+      return;
+    }
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    const formData = new FormData();
+    formData.append("file", upload[0]);
+    formData.append("name", username);
+    formData.append("email", email);
+    formData.append("password", password);
+
+    axios.post("http://localhost:3000/api/users/register", formData, config)
+      .then((response) => {
+        setToster({
+          open: true,
+          severity: "success",
+          message: "User created successfully",
+        });
+      })
+      .catch((error) => {
+        setToster({
+          open: true,
+          message: error.message,
+        });
+      });
   };
 
   const formFields = watch();
 
+  const handleClose = () => {
+    setToster({
+      open: false,
+      severity: "success",
+      message: "",
+    });
+  };
+
   return (
+    <>
     <div className="formcontainer">
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -98,6 +150,17 @@ function SignUp() {
         <DevTool control={control} />
       </form>
     </div>
+      <Snackbar open={toster.open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity={toster.severity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {toster.message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
 

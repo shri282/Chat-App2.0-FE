@@ -1,9 +1,11 @@
 import User from "../models/user.js";
 import jwtUtilities from "../config/jwt.js";
 const { generateToken } = jwtUtilities;
+import cloudinary from "../config/cloudinary.js";
 
 const registerUser = async (req, res) => {
-    const { name, email, password, pic } = req.body;
+    const { name, email, password } = req.body;
+    const file = req.file;
     if (!name || !email || !password) {
         return res.status(422).json({ error: "Please fill all the fields" });
     }
@@ -13,22 +15,31 @@ const registerUser = async (req, res) => {
         if (userExist) {
             return res.status(422).json({ error: "Email already exists" });
         }
-        const user = await User.create({ name, email, password, pic });
-        if (user) {
-            return res.status(201)
-                .json({ 
-                    message: "User created successfully", 
-                    user: {
-                        _id: user._id,
-                        name: user.name,
-                        email: user.email,
-                        pic: user.pic,
-                    }, 
-                    token: generateToken(user._id)
-                });
-        } else {
-            return res.status(400).json({ error: "Failed to create user" });
-        }
+        cloudinary.uploader.upload(file.path, async (error, result) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).json({ error: "Internal server error" });
+            }
+
+            console.log(result.secure_url);
+            const pic = result.secure_url;
+            const user = await User.create({ name, email, password, pic });
+            if (user) {
+                return res.status(201)
+                    .json({ 
+                        message: "User created successfully", 
+                        user: {
+                            _id: user._id,
+                            name: user.name,
+                            email: user.email,
+                            pic: pic,
+                        }, 
+                        token: generateToken(user._id)
+                    });
+            } else {
+                return res.status(400).json({ error: "Failed to create user" });
+            }
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Internal server error" });
