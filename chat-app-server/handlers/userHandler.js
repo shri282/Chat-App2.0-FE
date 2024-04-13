@@ -5,16 +5,37 @@ import cloudinary from "../config/cloudinary.js";
 
 const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
-    const file = req.file;
+    let file = req.file;
     if (!name || !email || !password) {
         return res.status(422).json({ error: "Please fill all the fields" });
     }
 
     try {
         const userExist = await User.findOne({ email });
+
         if (userExist) {
             return res.status(422).json({ error: "Email already exists" });
         }
+
+        if(!file) {
+          const user = await User.create({ name, email, password });
+            if (user) {
+                return res.status(201)
+                    .json({ 
+                        message: "User created successfully", 
+                        user: {
+                            _id: user._id,
+                            name: user.name,
+                            email: user.email,
+                            pic: user.pic,       
+                        }, 
+                        token: generateToken(user._id)
+                    });
+            } else {
+                return res.status(400).json({ error: "Failed to create user" });
+            }
+        }
+
         cloudinary.uploader.upload(file.path, async (error, result) => {
             if (error) {
                 console.error(error);
@@ -32,7 +53,7 @@ const registerUser = async (req, res) => {
                             _id: user._id,
                             name: user.name,
                             email: user.email,
-                            pic: pic,
+                            pic: pic,       
                         }, 
                         token: generateToken(user._id)
                     });
@@ -68,7 +89,7 @@ const loginUser = async (req, res) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                pic: user.pic,
+                pic: user.pic,  
             }, 
             token: generateToken(user._id)
         });
@@ -78,8 +99,27 @@ const loginUser = async (req, res) => {
     }   
 }
 
+const fetchUsers = async (req, res) => {
+    const keyword = req.query.search ? {
+        $or: [
+            { name: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } },
+        ]
+    } : {};
+
+    try {
+        const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+        return res.status(200).json(users);
+    } catch(error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+
+};
+
 
 export default { 
     registerUser,
-    loginUser
+    loginUser,
+    fetchUsers
 };

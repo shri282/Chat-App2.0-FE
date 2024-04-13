@@ -44,6 +44,10 @@
     padding: 0;
 }
 
+.guestbtn:hover {
+    background-color: #0056b3;
+}
+
 .formcontainer input[type="file"]::-webkit-file-upload-button {
     padding: 8px;
     border: none;

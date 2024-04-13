@@ -19,7 +19,7 @@ function SignUp() {
   const onSubmit = (data) => {
     const { username, email, password, upload } = data;
 
-    if(!username || !email || !password || !upload.length > 0) {
+    if(!username || !email || !password) {
       setToster({
         open: true,
         severity: "error",
@@ -40,6 +40,9 @@ function SignUp() {
 
     axios.post("http://localhost:3000/api/users/register", formData, config)
       .then((response) => {
+        console.log(response.data);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("accessToken", response.data.token);
         setToster({
           open: true,
           severity: "success",
