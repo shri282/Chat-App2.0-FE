@@ -1,10 +1,9 @@
 import express from 'express';
 import userHandlers from '../handlers/userHandler.js';
-const { registerUser, loginUser } = userHandlers;
-import multer from 'multer';
+import upload from '../config/multer.js';
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
+const { registerUser, loginUser } = userHandlers;
 
 router.post('/register',upload.single('file'), registerUser);
 router.get('/login', loginUser);
