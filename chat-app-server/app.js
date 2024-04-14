@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import userRouter from "./router/userRouter.js";
+import chatRouter from "./router/chatRouter.js";
 import cors from "cors";
 
 dotenv.config();
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/users", userRouter);
+app.use("/api/chats", chatRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
