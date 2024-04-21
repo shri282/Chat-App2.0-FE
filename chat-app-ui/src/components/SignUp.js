@@ -3,8 +3,7 @@ import "../styles/signup.css";
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import axios from "axios";
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import Toster from "./Toster";
 
 
 function SignUp() {
@@ -15,6 +14,14 @@ function SignUp() {
     severity: "success",
     message: "",
   });
+
+  const handleClose = () => {
+    setToster({
+      open: false,
+      severity: "success",
+      message: "",
+    });
+  };
 
   const onSubmit = (data) => {
     const { username, email, password, upload } = data;
@@ -48,6 +55,7 @@ function SignUp() {
           severity: "success",
           message: "User created successfully",
         });
+        
       })
       .catch((error) => {
         setToster({
@@ -58,14 +66,6 @@ function SignUp() {
   };
 
   const formFields = watch();
-
-  const handleClose = () => {
-    setToster({
-      open: false,
-      severity: "success",
-      message: "",
-    });
-  };
 
   return (
     <>
@@ -153,16 +153,9 @@ function SignUp() {
         <DevTool control={control} />
       </form>
     </div>
-      <Snackbar open={toster.open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert
-          onClose={handleClose}
-          severity={toster.severity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {toster.message}
-        </Alert>
-      </Snackbar>
+      {
+        toster.open && (<Toster Toster={toster} handleClose={handleClose} />)
+      }
     </>
   );
 }

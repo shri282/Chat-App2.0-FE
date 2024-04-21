@@ -1,50 +1,21 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 import axios from "axios";
 import "../styles/signup.css";
+import Toster from "./Toster";
 
 function Login() {
   
   const { register, handleSubmit, control, formState, setValue } = useForm();
   const { errors } = formState;
+  const navigate = useNavigate();
   const [toster, setToster] = React.useState({
     open: false,
     severity: "success",
     message: "",
   });
-  
-  const onSubmit = (data) => {
-    const { email, password } = data; 
-    if(!email || !password) {
-      setToster({
-        open: true,
-        severity: "error",
-        message: "All fields are required",
-      });
-      return;
-    }
-    
-    axios.get("http://localhost:3000/api/users/login", { email, password })
-    .then((response) => {
-      console.log(response.data);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      localStorage.setItem("accessToken", response.data.token);
-      setToster({
-        open: true,
-        severity: "success",
-        message: "User logged in successfully",
-      });
-    })
-    .catch((error) => {
-      setToster({
-        open: true,
-        message: error.message,
-      });
-    });
-  };
   
   const handleClose = () => {
     setToster({
@@ -54,6 +25,38 @@ function Login() {
     });
   };
 
+  const onSubmit = (data) => {
+    const { email, password } = data; 
+    if(!email || !password) {
+      setToster({
+        open: true,
+        severity: "error",
+        message: "All fields are required",   
+      });
+      return;
+    }
+    
+    axios.get("http://localhost:3000/api/users/login", { 
+      params: { email, password },
+     })
+    .then((response) => {
+      console.log(response.data);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("accessToken", response.data.token);
+      setToster({
+        open: true,
+        severity: "success",
+        message: "User logged in successfully",
+      });
+      navigate("/chats");
+    })
+    .catch((error) => {
+      setToster({
+        open: true,
+        message: error.message,
+      });
+    });
+  };
   
   return (
     <>
@@ -107,16 +110,9 @@ function Login() {
           <DevTool control={control} />
         </form>
       </div>
-      <Snackbar open={toster.open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert
-          onClose={handleClose}
-          severity={toster.severity}
-          variant="filled"
-          sx={{ width: '100%' }}
-          >
-          {toster.message}
-        </Alert>
-      </Snackbar>
+      {
+        toster.open && (<Toster Toster={toster} handleClose={handleClose} />)
+      }
    </>
   )
 }

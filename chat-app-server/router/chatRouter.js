@@ -3,9 +3,15 @@ import chatHandlers from '../handlers/chatHandler.js';
 import authUser from '../middleware/authMiddleware.js';
 
 const chatRouter = express.Router();
-const { openChat, fetchChats } = chatHandlers;
+const { openChat, fetchChats, createGroupChat, renameGroup, addMember, removeMember } = chatHandlers;
 
 chatRouter.get('/openChat', authUser, openChat);
 chatRouter.get('/fetchChats', authUser, fetchChats);
+chatRouter.post('/createGroupChat', authUser, createGroupChat);
+chatRouter.post('/renameGroup', authUser, renameGroup); 
+chatRouter.post('/addMembers', authUser, addMember);
+chatRouter.post('/removeMembers', authUser, removeMember);
+// chatRouter.post('/leaveGroup', authUser, leaveGroup);
+// chatRouter.post('/deleteChat', authUser, deleteChat);
 
 export default chatRouter;

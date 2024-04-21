@@ -1,8 +1,41 @@
 import React from 'react'
+import { useChatContext } from '../context/ChatProvider'
+import { Box } from '@mui/material';
+import SideDrawer from '../components/SideDrawer';
+import MenuContent from '../components/MenuContent';
 
 function ChatPage() {
+  const { user } = useChatContext();
+
   return (
-    <div>ChatPage</div>
+    <div>
+      { 
+        user && 
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '5px',
+            backgroundColor: 'white',
+            padding: '5px 10px 5px 10px', 
+            border: '4px solid #E0DFDF'
+          }}
+        >
+          <SideDrawer />
+          <p>chatapp</p>
+          <MenuContent />
+        </Box>
+      }
+      <Box
+      display={'flex'}
+      flexDirection={'row'}
+      justifyContent={'space-between'}
+      >
+        { user && <h1>MyChats</h1> }
+        { user && <h1>ChatBox</h1> }
+      </Box>
+    </div>
   )
 }
 

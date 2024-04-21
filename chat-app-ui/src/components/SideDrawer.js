@@ -1,0 +1,155 @@
+import React from 'react'
+import SearchIcon from '@mui/icons-material/Search';
+import { Button, Drawer, Tooltip } from '@mui/material';
+import Toster from './Toster.js';
+import axios from 'axios';
+import Loading from './Loading.js';
+import UsersListItem from './UsersListItem.js';
+
+function SideDrawer() {
+  const [open, setOpen] = React.useState(false);
+  const [toster, setToster] = React.useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const [users, setUsers] = React.useState({
+    isLoading: false,
+    data: [],
+    searchQuery: '',
+    error : null
+  });
+
+  const handleClose = () => {
+    setToster({
+      open: false,
+      severity: "success",
+      message: "",
+    });
+  };
+
+  const toggleDrawer = (doOpen) => {
+    setOpen(doOpen);
+  }
+
+  const searchHandler = (event) => {
+    setUsers({
+      ...users,
+      searchQuery: event.target.value
+    });
+  }
+
+  const handleFunction = () => {
+    console.log('User clicked');
+  }
+
+  const getUsersHandler = async() => {
+    if(users.searchQuery === '') {
+      setToster({
+        open: true,
+        severity: "error",
+        message: "Please enter a valid search query",
+      });
+      return;
+    };
+
+    try {
+      setUsers((users) =>{
+        return {
+          isLoading: true,
+          data: [],
+          searchQuery: '',
+          error : null
+        }
+      });
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }  
+      }
+      // API call to get users
+      const searchQuery = users.searchQuery;
+      const response = await axios.get(`http://localhost:3000/api/users/fetchUsers?search=${searchQuery}`, config);
+      setUsers((prevUsers) => {
+        return {
+          ...prevUsers,
+          isLoading: false,
+          data: response.data
+        }
+      });
+      setToster({
+        open: true,
+        severity: "success",
+        message: "Users fetched successfully",
+      });   
+    } catch(error) {
+      console.log(error);
+      setUsers((prevUsers) => {
+        return {
+          ...prevUsers,
+          isLoading: false,
+          error: error.message
+        }
+      });
+      setToster({
+        open: true,
+        severity: "error",
+        message: error.message,
+      });
+    }
+  }
+
+  return (
+    <div>
+      <Tooltip 
+      title="search users to chat" 
+      arrow
+      placement='bottom-end'
+      >
+          <Button onClick={() => toggleDrawer(true)} sx={{ width:'150px', height:'40px', padding:'0px', margin:'0px'}}>
+              <SearchIcon sx={{ paddingRight:'3px'}}/>
+              <p>Search User</p>
+          </Button>   
+      </Tooltip>
+      <Drawer open={open} onClose={() => {
+        setUsers(prevUsers => {
+          return {
+            ...prevUsers,
+            isLoading: false,
+            data: [],
+            searchQuery: '',
+            error : null
+          }
+        })
+        toggleDrawer(false);
+        }}>
+        <div style={{ width: '280px', padding: '10px'}}>
+          <h3>Search User's</h3>
+          <div style={{ display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+            <input onChange={searchHandler} style={{ padding: '5px', width:'220px', marginRight:'5px'}} type="text" placeholder="Search User" />
+            <Button onClick={getUsersHandler} size='small' variant='outlined'>Go</Button>
+          </div>
+            {
+              users.isLoading ? (
+                <Loading width={230}/>
+              ) : (
+                users.data.map((user) => {
+                  return (
+                    <UsersListItem user={user} handleFunction={handleFunction} />
+                  )
+                })
+              )
+            }
+            {
+              users.error && <p>{users.error}</p>
+            }
+        </div>
+      </Drawer>
+        {
+          toster.open && <Toster Toster={toster} handleClose={handleClose} />
+        }
+    </div>
+  )
+}
+
+export default SideDrawer
