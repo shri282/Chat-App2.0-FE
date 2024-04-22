@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
-import axios from "axios";
+import axios from "../config/axios";
 import "../styles/signup.css";
 import Toster from "./Toster";
 
@@ -36,7 +36,7 @@ function Login() {
       return;
     }
     
-    axios.get("http://localhost:3000/api/users/login", { 
+    axios.get("/api/users/login", { 
       params: { email, password },
      })
     .then((response) => {

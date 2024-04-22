@@ -2,7 +2,7 @@ import React from "react";
 import "../styles/signup.css";
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
-import axios from "axios";
+import axios from "../config/axios";
 import Toster from "./Toster";
 
 
@@ -45,7 +45,7 @@ function SignUp() {
     formData.append("email", email);
     formData.append("password", password);
 
-    axios.post("http://localhost:3000/api/users/register", formData, config)
+    axios.post("/api/users/register", formData, config)
       .then((response) => {
         console.log(response.data);
         localStorage.setItem("user", JSON.stringify(response.data.user));

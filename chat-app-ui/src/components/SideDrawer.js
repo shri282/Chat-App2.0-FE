@@ -2,7 +2,7 @@ import React from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import { Button, Drawer, Tooltip } from '@mui/material';
 import Toster from './Toster.js';
-import axios from 'axios';
+import axios from '../config/axios.js';
 import Loading from './Loading.js';
 import UsersListItem from './UsersListItem.js';
 
@@ -69,7 +69,7 @@ function SideDrawer() {
       }
       // API call to get users
       const searchQuery = users.searchQuery;
-      const response = await axios.get(`http://localhost:3000/api/users/fetchUsers?search=${searchQuery}`, config);
+      const response = await axios.get(`/api/users/fetchUsers?search=${searchQuery}`, config);
       setUsers((prevUsers) => {
         return {
           ...prevUsers,
