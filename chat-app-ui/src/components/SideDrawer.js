@@ -5,8 +5,10 @@ import Toster from './Toster.js';
 import axios from '../config/axios.js';
 import Loading from './Loading.js';
 import UsersListItem from './UsersListItem.js';
+import { useChatContext } from '../context/ChatProvider.js';
 
 function SideDrawer() {
+  const { chats, setChats, accessToken } = useChatContext();
   const [open, setOpen] = React.useState(false);
   const [toster, setToster] = React.useState({
     open: false,
@@ -39,8 +41,23 @@ function SideDrawer() {
     });
   }
 
-  const handleFunction = () => {
+  const handleFunction = async(userId) => {
     console.log('User clicked');
+    try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }  
+      }
+      const { data } = await axios.post('/api/chats/openChat', { userId: userId }, config);
+      if(!chats.includes(data)){
+        setChats((prevChats) => {
+          return [data, ...prevChats];
+        });
+      };
+    } catch(error) {
+      console.log(error);
+    }
   }
 
   const getUsersHandler = async() => {
@@ -135,7 +152,7 @@ function SideDrawer() {
               ) : (
                 users.data.map((user) => {
                   return (
-                    <UsersListItem user={user} handleFunction={handleFunction} />
+                    <UsersListItem key={user._id} user={user} handleFunction={() => handleFunction(user._id)} />
                   )
                 })
               )

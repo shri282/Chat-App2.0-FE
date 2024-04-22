@@ -3,6 +3,8 @@ import { useChatContext } from '../context/ChatProvider'
 import { Box } from '@mui/material';
 import SideDrawer from '../components/SideDrawer';
 import MenuContent from '../components/MenuContent';
+import MyChats from '../components/MyChats';
+import ChatBox from '../components/ChatBox';
 
 function ChatPage() {
   const { user } = useChatContext();
@@ -32,8 +34,8 @@ function ChatPage() {
       flexDirection={'row'}
       justifyContent={'space-between'}
       >
-        { user && <h1>MyChats</h1> }
-        { user && <h1>ChatBox</h1> }
+        { user && <MyChats /> }
+        { user && <ChatBox />}
       </Box>
     </div>
   )

@@ -5,7 +5,7 @@ import authUser from '../middleware/authMiddleware.js';
 const chatRouter = express.Router();
 const { openChat, fetchChats, createGroupChat, renameGroup, addMember, removeMember } = chatHandlers;
 
-chatRouter.get('/openChat', authUser, openChat);
+chatRouter.post('/openChat', authUser, openChat);
 chatRouter.get('/fetchChats', authUser, fetchChats);
 chatRouter.post('/createGroupChat', authUser, createGroupChat);
 chatRouter.post('/renameGroup', authUser, renameGroup); 
