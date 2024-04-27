@@ -6,10 +6,12 @@ import axios from '../config/axios.js';
 import Loading from './Loading.js';
 import UsersListItem from './UsersListItem.js';
 import { useChatContext } from '../context/ChatProvider.js';
+import Progress from './Progress.js';
 
 function SideDrawer() {
   const { chats, setChats, accessToken } = useChatContext();
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [toster, setToster] = React.useState({
     open: false,
     severity: "success",
@@ -43,6 +45,7 @@ function SideDrawer() {
 
   const handleFunction = async(userId) => {
     console.log('User clicked');
+    setLoading(true);
     try {
       const config = {
         headers: {
@@ -50,9 +53,17 @@ function SideDrawer() {
         }  
       }
       const { data } = await axios.post('/api/chats/openChat', { userId: userId }, config);
-      if(!chats.includes(data)){
+      if(!chats.find((chat) => chat._id === data._id)){
         setChats((prevChats) => {
           return [data, ...prevChats];
+        });
+        setLoading(false);
+      }else {
+        setLoading(false);
+        setToster({
+          open: true,
+          severity: "error",
+          message: "the chat was already created",
         });
       };
     } catch(error) {
@@ -161,6 +172,9 @@ function SideDrawer() {
               users.error && <p>{users.error}</p>
             }
         </div>
+      {
+        <Progress loading={loading} />
+      }
       </Drawer>
         {
           toster.open && <Toster Toster={toster} handleClose={handleClose} />

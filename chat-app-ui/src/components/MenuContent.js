@@ -8,7 +8,7 @@ import Person2Icon from '@mui/icons-material/Person2';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useChatContext } from '../context/ChatProvider';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import ModelCp from './ModelCp';
+import ProfileModel from './ProfileModel';
 
 function MenuContent() {
   const { user } = useChatContext();
@@ -54,10 +54,10 @@ function MenuContent() {
         TransitionComponent={Fade}
       >
         <MenuItem sx={{ width: '120px', padding:'0'}} onClick={handleClose} disableRipple>
-          <ModelCp user={user}>
+          <ProfileModel user={user}>
               <Person2Icon sx={{ paddingRight:'10px'}} />
               Profile
-          </ModelCp>
+          </ProfileModel>
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem sx={{ width: '120px', paddingLeft:'10px'}} onClick={handleClose} disableRipple>

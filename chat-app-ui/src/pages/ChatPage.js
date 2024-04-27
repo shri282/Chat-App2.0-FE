@@ -1,6 +1,6 @@
 import React from 'react'
 import { useChatContext } from '../context/ChatProvider'
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import SideDrawer from '../components/SideDrawer';
 import MenuContent from '../components/MenuContent';
 import MyChats from '../components/MyChats';
@@ -10,13 +10,14 @@ function ChatPage() {
   const { user } = useChatContext();
 
   return (
-    <div>
+    <Box width={'100%'} display={'flex'} flexDirection={'column'}>
       { 
         user && 
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
+            width : '100%',
             alignItems: 'center',
             marginTop: '5px',
             backgroundColor: 'white',
@@ -25,19 +26,20 @@ function ChatPage() {
           }}
         >
           <SideDrawer />
-          <p>chatapp</p>
+          <Typography variant='h5' color={'orange'}>ChatterBox</Typography>
           <MenuContent />
         </Box>
       }
       <Box
       display={'flex'}
+      width={'100%'}
       flexDirection={'row'}
       justifyContent={'space-between'}
       >
         { user && <MyChats /> }
         { user && <ChatBox />}
       </Box>
-    </div>
+    </Box>
   )
 }
 
