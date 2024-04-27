@@ -63,7 +63,7 @@ function SideDrawer() {
         setToster({
           open: true,
           severity: "error",
-          message: "the chat was already created",
+          message: "Chat already exist",
         });
       };
     } catch(error) {

@@ -6,7 +6,7 @@ import CreateGCModel from './CreateGCModel';
 
 function MyChats() {
   const { chats, user } = useChatContext();
-  const [selectedChat, setselectedChat] = React.useState()
+  const [selectedChat, setselectedChat] = React.useState();
 
   const selectChatHandler = (chat) => {
     setselectedChat(chat);
@@ -14,13 +14,13 @@ function MyChats() {
 
   return (
     <Box
-    width={'35%'}
+    width={'50%'}
     height={'650px'}
     bgcolor={'white'}
     borderRadius={2}
     boxShadow={"0px 4px 20px rgba(0, 0, 0, 0.1)"}
     marginLeft={2}
-    marginRight={20}
+    marginRight={10}
     marginBottom={2}
     marginTop={2}
     >

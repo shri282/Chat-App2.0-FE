@@ -10,6 +10,7 @@ const ChatProvider = ({ children }) => {
   const [user, setUser] = React.useState(null);
   const [accessToken, setAccessToken] = React.useState(null);
   const [chats, setChats] = React.useState([]);
+  const [users, setUsers] = React.useState([]);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -40,13 +41,34 @@ const ChatProvider = ({ children }) => {
     }
   },[accessToken]);
 
+  const fetchUsers = useCallback(async() => {
+    try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }  
+      }
+      // API call to get users
+      const { data } = await axios.get("/api/users/fetchUsers", config);
+      setUsers(data);   
+    } catch(error) {
+      console.log(error);
+    }
+  },[accessToken]);
+
   useEffect(() => {
     if(!accessToken) return;
     fetchChats();
-  },[accessToken, fetchChats])
+  },[accessToken, fetchChats]);
+
+  useEffect(() => {
+    if(!accessToken) return;
+    fetchUsers();
+    console.log('in context',users);
+  },[accessToken, fetchUsers]);
 
   return (
-    <chatContext.Provider value={{ user, setUser, accessToken, setAccessToken, chats, setChats}}>
+    <chatContext.Provider value={{ user, users, setUser, accessToken, setAccessToken, chats, setChats}}>
       { children }
     </chatContext.Provider>
   )

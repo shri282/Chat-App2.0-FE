@@ -64,14 +64,13 @@ const createGroupChat = async(req, res) => {
     if(groupMembers.length < 2) {
         return res.status(400).json({ message: "Group must have at least 2 members" });
     }
-    groupMembers = JSON.parse(groupMembers);
     groupMembers.push(req.user._id);
     try {
        const newGroupChat = await Chat.create({
-              isGroupChat: true,
-              chatName: groupName,
-              users: groupMembers,
-              groupAdmin: req.user._id
+            isGroupChat: true,
+            chatName: groupName,
+            users: groupMembers,
+            groupAdmin: req.user._id
         });
 
         const groupChat = await Chat.findById(newGroupChat._id)
