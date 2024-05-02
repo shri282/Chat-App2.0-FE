@@ -16,8 +16,8 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '23%',
-    height: '35%',
+    width: '20%',
+    height: '30%',
     bgcolor: 'background.paper',
     borderRadius:'3px',
     boxShadow: 24,
@@ -120,8 +120,12 @@ function CreateGCModel({ children, user }) {
         <Box 
         sx={style}
         >
-          <Label>Group Name</Label>
-          <TextField sx={{ width:'300px', marginBottom:'10px'}} size='small' onChange={chatNameHandler} id="outlined-basic" label="Chat Name" variant="outlined" />
+          <Box
+          width={'100%'}
+          >
+            <Label>Group Name</Label>
+            <TextField sx={{ width:'100%', marginBottom:'10px'}} size='small' onChange={chatNameHandler} id="outlined-basic" label="Chat Name" variant="outlined" />
+          </Box>
           <MultiSelect setMembers={setgroupChatData} users={users} />
           <Button onClick={submitHandler} variant='contained' sx={{ marginTop: '30px'}}>Create</Button>
         </Box>

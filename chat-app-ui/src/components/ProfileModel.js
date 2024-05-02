@@ -26,10 +26,10 @@ const ProfileModel = ({ children, user }) => {
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
-
+  
   return (
     <div>
-      <Button sx={{ color:'black', fontSize:'15px', textTransform:'capitalize'}} onClick={handleOpen}>{children}</Button>
+      <Box display={'flex'} alignItems={'center'} onClick={handleOpen}>{children}</Box>
       <Modal
         open={open}
         onClose={handleClose}

@@ -1,14 +1,17 @@
-import React from 'react'
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import { Fade, Divider, Avatar } from '@mui/material';
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import Person2Icon from '@mui/icons-material/Person2';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { useChatContext } from '../context/ChatProvider';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import PersonAdd from '@mui/icons-material/PersonAdd';
+import Settings from '@mui/icons-material/Settings';
+import Logout from '@mui/icons-material/Logout';
 import ProfileModel from './ProfileModel';
+import { useChatContext } from '../context/ChatProvider';
 
 function MenuContent() {
   const { user } = useChatContext();
@@ -22,52 +25,92 @@ function MenuContent() {
   };
 
   const logoutHandler = () => {
+    handleClose();
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken');
     window.location.reload();
   }
 
   return (
-    <div style={{ display:'flex', flexDirection:'row', alignItems:'center' }}>
-      <Button>
-        <NotificationsIcon sx={{ paddingRight:'10px'}} />
-      </Button>
-      <Button
-        id="fade-button"
-        aria-controls={open ? 'fade-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
-        endIcon={<KeyboardArrowDownIcon />}
-      >
-        <Avatar alt="Remy Sharp" sx={{ marginRight:'5px'}} src={user.pic} />
-        { user.name }
-      </Button>
+    <React.Fragment>
+      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', paddingRight:'20px' }}>
+        <Tooltip title="Account settings">
+          <IconButton
+            onClick={handleClick}
+            size="small"
+            sx={{ ml: 2 }}
+            aria-controls={open ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+          >
+            <Avatar src={user.pic} sx={{ width: 32, height: 32 }}></Avatar>
+          </IconButton>
+        </Tooltip>
+      </Box>
       <Menu
-        id="fade-menu"
-        MenuListProps={{
-          'aria-labelledby': 'fade-button',
-        }}
         anchorEl={anchorEl}
+        id="account-menu"
         open={open}
         onClose={handleClose}
-        TransitionComponent={Fade}
+        onClick={handleClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&::before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem sx={{ width: '120px', padding:'0'}} onClick={handleClose} disableRipple>
+        <MenuItem onClick={handleClose}>
           <ProfileModel user={user}>
-              <Person2Icon sx={{ paddingRight:'10px'}} />
-              Profile
+            <Avatar /> Profile
           </ProfileModel>
         </MenuItem>
-        <Divider sx={{ my: 0.5 }} />
-        <MenuItem sx={{ width: '120px', paddingLeft:'10px'}} onClick={handleClose} disableRipple>
-          <div onClick={logoutHandler} style={{ color:'black', display:'flex', alignItems:'center', fontSize:'15px', textTransform:'capitalize'}}>
-            <LogoutIcon sx={{ paddingRight:'10px'}} />
-            Logout
-          </div>
+        <MenuItem onClick={handleClose}>
+          <Avatar /> My account
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <PersonAdd fontSize="small" />
+          </ListItemIcon>
+          Add another account
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <Settings fontSize="small" />
+          </ListItemIcon>
+          Settings
+        </MenuItem>
+        <MenuItem onClick={logoutHandler}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
         </MenuItem>
       </Menu>
-    </div>
+    </React.Fragment>
   )
 }
 
