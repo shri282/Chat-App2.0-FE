@@ -64,7 +64,6 @@ const ChatProvider = ({ children }) => {
   useEffect(() => {
     if(!accessToken) return;
     fetchUsers();
-    console.log('in context',users);
   },[accessToken, fetchUsers]);
 
   return (

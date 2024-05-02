@@ -19,7 +19,6 @@ function ChatPage() {
             justifyContent: 'space-between',
             width : '100%',
             alignItems: 'center',
-            marginTop: '5px',
             backgroundColor: 'white',
             padding: '5px 10px 5px 10px', 
             border: '4px solid #E0DFDF'

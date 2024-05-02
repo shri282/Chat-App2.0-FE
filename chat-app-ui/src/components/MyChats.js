@@ -14,13 +14,13 @@ function MyChats() {
 
   return (
     <Box
-    width={'50%'}
+    width={'30%'}
     height={'650px'}
     bgcolor={'white'}
     borderRadius={2}
     boxShadow={"0px 4px 20px rgba(0, 0, 0, 0.1)"}
     marginLeft={2}
-    marginRight={10}
+    marginRight={2}
     marginBottom={2}
     marginTop={2}
     >
@@ -61,7 +61,7 @@ function MyChats() {
               borderRadius={2}
               boxShadow={"0px 1px 1px rgba(0, 0, 0, 0.1)"}
               padding={1}
-              sx={{ cursor:'pointer'}}
+              sx={{ cursor:'pointer', ":hover":{ backgroundColor: '#2CB195', color:'white'}}}
               bgcolor= { selectedChat ? (selectedChat._id === chat._id ? "#2CB195" : '#f2f1f0') : '#f2f1f0'}
               color= { selectedChat ? (selectedChat._id === chat._id ? "white" : 'black') : 'black'}
               >
