@@ -1,12 +1,12 @@
 import React from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import { Button, Drawer, Tooltip } from '@mui/material';
-import Toster from './Toster.js';
+import Toster from '../ui components/Toster.js';
 import axios from '../config/axios.js';
-import Loading from './Loading.js';
-import UsersListItem from './UsersListItem.js';
+import Loading from '../ui components/Loading.js';
+import UsersListItem from '../ui components/UsersListItem.js';
 import { useChatContext } from '../context/ChatProvider.js';
-import Progress from './Progress.js';
+import Progress from '../ui components/Progress.js';
 
 function SideDrawer() {
   const { chats, setChats, accessToken } = useChatContext();

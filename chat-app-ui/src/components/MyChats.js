@@ -2,13 +2,12 @@ import React from 'react'
 import { useChatContext } from '../context/ChatProvider'
 import { Box, Button, Stack, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import CreateGCModel from './CreateGCModel';
+import CreateGCModel from '../ui components/CreateGCModel';
 import { Avatar } from '@mui/material';
-import FullscreenImageModal from './FullScreenImageModel';
+import FullscreenImageModal from '../ui components/FullScreenImageModel';
 
 function MyChats() {
-  const { chats, user } = useChatContext();
-  const [selectedChat, setselectedChat] = React.useState();
+  const { chats, user, setselectedChat, selectedChat } = useChatContext();
   const [imageModalOpen, setImageModalOpen] = React.useState(false);
   const [selectedImage, setSelectedImage] = React.useState('');
 
@@ -71,12 +70,12 @@ function MyChats() {
               borderRadius={2}
               boxShadow={"0px 1px 1px rgba(0, 0, 0, 0.1)"}
               padding={1}
-              sx={{ cursor:'pointer', ":hover":{ backgroundColor: '#2CB195', color:'white'}}}
+              sx={{ cursor:'pointer', ":hover":{ backgroundColor: '#2CB195', color:'white',width:'92%',height:'10%'}}}
               bgcolor= { selectedChat ? (selectedChat._id === chat._id ? "#2CB195" : '#f2f1f0') : '#f2f1f0'}
               color= { selectedChat ? (selectedChat._id === chat._id ? "white" : 'black') : 'black'}
               >
                 <Avatar
-                  sx={{ marginRight: 2, cursor: 'pointer' }}
+                  sx={{ marginRight: 2, cursor: 'pointer', ":hover":{width:'42px', height:'42px'} }}
                   alt={user.name}
                   src={chat.isGroupChat ? chat.users[0].pic : (chat.users[0]._id === user._id ? chat.users[1].pic : chat.users[0].pic)}
                   imgProps={{

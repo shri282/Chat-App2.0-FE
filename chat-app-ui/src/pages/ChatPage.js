@@ -2,7 +2,7 @@ import React from 'react'
 import { useChatContext } from '../context/ChatProvider'
 import { Box, Typography } from '@mui/material';
 import SideDrawer from '../components/SideDrawer';
-import MenuContent from '../components/MenuContent';
+import MenuContent from '../ui components/MenuContent';
 import MyChats from '../components/MyChats';
 import ChatBox from '../components/ChatBox';
 

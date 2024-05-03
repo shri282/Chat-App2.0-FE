@@ -18,7 +18,7 @@ import ProfileModel from './ProfileModel';
 function ChatMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const { user } = useChatContext();
+  const { user, selectedChat } = useChatContext();
   const [openProfile, setOpenProfile] = React.useState(false);
 
   const handleProfileOpen = () => {
@@ -117,7 +117,7 @@ function ChatMenu() {
       display={'none'}
       >
         {
-          <ProfileModel setOpenProfile={setOpenProfile} openProfile={openProfile} user={user} />
+          <ProfileModel setOpenProfile={setOpenProfile} openProfile={openProfile} user={selectedChat.users[0]._id === user._id ? selectedChat.users[1] : selectedChat.users[0]} />
         }
       </Box>
     </React.Fragment>

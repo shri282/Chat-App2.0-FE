@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import axios from "../config/axios";
 import "../styles/signup.css";
-import Toster from "./Toster";
+import Toster from "../ui components/Toster";
 
 function Login() {
   
