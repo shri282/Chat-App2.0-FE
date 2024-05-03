@@ -10,7 +10,13 @@ function ChatPage() {
   const { user } = useChatContext();
 
   return (
-    <Box width={'100%'} display={'flex'} flexDirection={'column'}>
+    <Box 
+      width={'100%'} 
+      height={'100vh'} 
+      display={'flex'} 
+      flexDirection={'column'}
+      overflow={'hidden'}
+    >
       { 
         user && 
         <Box
@@ -21,19 +27,22 @@ function ChatPage() {
             alignItems: 'center',
             backgroundColor: 'white',
             padding: '5px 10px 5px 10px', 
-            border: '4px solid #E0DFDF'
+            border: '1px solid #E0DFDF'
           }}
         >
           <SideDrawer />
-          <Typography variant='h5' color={'orange'}>ChatterBox</Typography>
+          <Typography variant='h5' color={'orange'} >ChatterBox</Typography>
           <MenuContent />
         </Box>
       }
       <Box
-      display={'flex'}
-      width={'100%'}
-      flexDirection={'row'}
-      justifyContent={'space-between'}
+        display={'flex'}
+        width={'100%'}
+        flexGrow={1}
+        marginTop={1}
+        marginBottom={1}
+        flexDirection={'row'}
+        justifyContent={'space-between'}
       >
         { user && <MyChats /> }
         { user && <ChatBox />}

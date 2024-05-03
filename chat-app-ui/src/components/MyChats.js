@@ -22,88 +22,87 @@ function MyChats() {
 
   return (
     <Box
-    width={'30%'}
-    height={'650px'}
-    bgcolor={'white'}
-    borderRadius={2}
-    boxShadow={"0px 4px 20px rgba(0, 0, 0, 0.1)"}
-    marginLeft={2}
-    marginRight={2}
-    marginBottom={2}
-    marginTop={2}
-    >
-    <Box
-    display={'flex'}
-    flexDirection={'row'}
-    justifyContent={'space-between'}
-    alignItems={'center'}
-    margin={1}
-    
-    >
-      <Typography variant='h5' color={'orange'}>My Chats</Typography>
-      <CreateGCModel user={user}>
-        <Button variant='outlined' startIcon={<AddIcon />}>ADD GROUP</Button>
-      </CreateGCModel>
-    </Box>
-    <Box>
-      <Stack
-      width={'90%'}
-      height={'560px'}
-      spacing={2}
-      marginLeft={1}
-      marginTop={2}
-      padding={1}
-      borderRadius={2}
-      bgcolor={"#FFFCFC"}
+      width={'40%'}
+      height={'87vh'}
+      display={'flex'}
+      flexDirection={'column'}
+      borderRight={'1px solid #E0DFDF'}
+      bgcolor={'white'}
+      boxShadow={"0px 4px 20px rgba(0, 0, 0, 0.1)"}
       overflow={'hidden'}
-      sx={{ overflowY:'auto', scrollbarWidth: 'none' }}
+    >
+      <Box
+        width={'95%'}
+        display={'flex'}
+        flexDirection={'row'}
+        justifyContent={'space-between'}
+        alignItems={'center'}
+        margin={1} 
       >
-        {
-          chats && chats.map((chat) => {
-            return (
-              <Box
-              display={'flex'}
-              flexDirection={'row'}
-              alignItems={'center'}
-              key={chat._id}
-              width={'90%'}
-              borderRadius={2}
-              boxShadow={"0px 1px 1px rgba(0, 0, 0, 0.1)"}
-              padding={1}
-              sx={{ cursor:'pointer', ":hover":{ backgroundColor: '#2CB195', color:'white',width:'92%',height:'10%'}}}
-              bgcolor= { selectedChat ? (selectedChat._id === chat._id ? "#2CB195" : '#f2f1f0') : '#f2f1f0'}
-              color= { selectedChat ? (selectedChat._id === chat._id ? "white" : 'black') : 'black'}
-              >
-                <Avatar
-                  sx={{ marginRight: 2, cursor: 'pointer', ":hover":{width:'42px', height:'42px'} }}
-                  alt={user.name}
-                  src={chat.isGroupChat ? chat.users[0].pic : (chat.users[0]._id === user._id ? chat.users[1].pic : chat.users[0].pic)}
-                  imgProps={{
-                    loading: 'lazy',
-                  }}
-                  onClick={() => handleAvatarClick(chat.isGroupChat ? chat.users[0].pic : (chat.users[0]._id === user._id ? chat.users[1].pic : chat.users[0].pic))}
-                />
-
+        <Typography variant='h5' color={'orange'}>My Chats</Typography>
+        <CreateGCModel user={user}>
+          <Button variant='outlined' startIcon={<AddIcon />}>ADD GROUP</Button>
+        </CreateGCModel>
+      </Box>
+      {/* <Box
+        width={'95%'}
+        height={'100%'}
+        margin={1}
+        overflow={'hidden'}
+      > */}
+        <Stack
+          width={'100%'}
+          height={'90%'}
+          // padding={1}
+          bgcolor={"#FFFCFC"}
+          overflow={'hidden'}
+          sx={{ overflowY:'auto' }}
+        >
+          {
+            chats && chats.map((chat) => {
+              return (
                 <Box
+                width={'100%'}
+                key={chat._id}
                 display={'flex'}
-                flexDirection={'column'}
-                onClick={() => selectChatHandler(chat)} 
+                flexDirection={'row'}
+                alignItems={'center'}
+                border={'0.5px solid #E0DFDF'}
+                boxShadow={"0px 1px 1px rgba(0, 0, 0, 0.1)"}
+                padding={1}
+                sx={{ cursor:'pointer', ":hover":{ backgroundColor: '#eee', color:'black' }}}
+                bgcolor= { selectedChat ? (selectedChat._id === chat._id ? "#eee" : '#fff') : '#fff'}
                 >
-                  <Typography sx={{ textTransform: 'capitalize', fontFamily:'Roboto', fontSize:'17px'}} variant='h6'>{ chat.isGroupChat ? chat.chatName : (chat.users[0]._id === user._id ? chat.users[1].name : chat.users[0].name) }</Typography>
-                  <Typography>{ chat.createdAt }</Typography>
+                  <Avatar
+                    sx={{ marginRight: 2, cursor: 'pointer', ":hover":{width:'42px', height:'42px'} }}
+                    alt={user.name}
+                    src={chat.isGroupChat ? chat.users[0].pic : (chat.users[0]._id === user._id ? chat.users[1].pic : chat.users[0].pic)}
+                    imgProps={{
+                      loading: 'lazy',
+                    }}
+                    onClick={() => handleAvatarClick(chat.isGroupChat ? chat.users[0].pic : (chat.users[0]._id === user._id ? chat.users[1].pic : chat.users[0].pic))}
+                  />
+
+                  <Box
+                  display={'flex'}
+                  flexDirection={'column'}
+                  onClick={() => selectChatHandler(chat)} 
+                  >
+                    <Typography sx={{ textTransform: 'capitalize', fontFamily:'Roboto', fontSize:'17px'}} variant='h6'>{ chat.isGroupChat ? chat.chatName : (chat.users[0]._id === user._id ? chat.users[1].name : chat.users[0].name) }</Typography>
+                    <Typography>{ chat.createdAt }</Typography>
+                  </Box>
                 </Box>
-              </Box>
-            )
-          })
-        }
-      </Stack>
-    </Box>
-    <FullscreenImageModal
-    open={imageModalOpen} 
-    handleClose={() => setImageModalOpen(false)} 
-    imgSrc={selectedImage} 
-    alt="Chat Avatar"
-    />
+              )
+            })
+          }
+        </Stack>
+      {/* </Box> */}
+      <FullscreenImageModal
+        open={imageModalOpen} 
+        handleClose={() => setImageModalOpen(false)} 
+        imgSrc={selectedImage} 
+        alt="Chat Avatar"
+      />
     </Box>
   )
 }
