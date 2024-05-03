@@ -1,7 +1,9 @@
 import React from 'react'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
+import ChatMenu from './ChatMenu';
 
 function ChatBox() {
+
   return (
     <Box
     width={'100%'}
@@ -15,17 +17,17 @@ function ChatBox() {
     marginTop={2}
     overflow={'hidden'}
     >
-    <Box
-    display={'flex'}
-    flexDirection={'row'}
-    justifyContent={'space-between'}
-    alignItems={'center'}
-    padding={1}
-    bgcolor={'lightgray'}
-    >
-      <Typography>chatname</Typography>
-      <Button variant='contained'>See Profile</Button>
-    </Box>
+      <Box
+      display={'flex'}
+      flexDirection={'row'}
+      justifyContent={'space-between'}
+      alignItems={'center'}
+      padding={1}
+      bgcolor={'lightgray'}
+      >
+        <Typography>chatname</Typography>
+        <ChatMenu />
+      </Box>
       
     </Box>
   )

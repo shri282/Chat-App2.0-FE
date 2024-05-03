@@ -16,6 +16,7 @@ import { useChatContext } from '../context/ChatProvider';
 function MenuContent() {
   const { user } = useChatContext();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [openProfile, setOpenProfile] = React.useState(false);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -29,6 +30,11 @@ function MenuContent() {
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken');
     window.location.reload();
+  }
+
+  const handleProfileOpen = () => {
+    handleClose();
+    setOpenProfile(true);
   }
 
   return (
@@ -82,10 +88,8 @@ function MenuContent() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>
-          <ProfileModel user={user}>
+        <MenuItem onClick={handleProfileOpen}>
             <Avatar /> Profile
-          </ProfileModel>
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <Avatar /> My account
@@ -110,6 +114,14 @@ function MenuContent() {
           Logout
         </MenuItem>
       </Menu>
+      <Box
+      display={'none'}
+      >
+        {
+          <ProfileModel setOpenProfile={setOpenProfile} openProfile={openProfile} user={user} />
+        }
+      </Box>
+      
     </React.Fragment>
   )
 }

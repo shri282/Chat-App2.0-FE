@@ -3,10 +3,19 @@ import { useChatContext } from '../context/ChatProvider'
 import { Box, Button, Stack, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CreateGCModel from './CreateGCModel';
+import { Avatar } from '@mui/material';
+import FullscreenImageModal from './FullScreenImageModel';
 
 function MyChats() {
   const { chats, user } = useChatContext();
   const [selectedChat, setselectedChat] = React.useState();
+  const [imageModalOpen, setImageModalOpen] = React.useState(false);
+  const [selectedImage, setSelectedImage] = React.useState('');
+
+  const handleAvatarClick = (src) => {
+    setSelectedImage(src)
+    setImageModalOpen(true);
+};
 
   const selectChatHandler = (chat) => {
     setselectedChat(chat);
@@ -48,16 +57,17 @@ function MyChats() {
       borderRadius={2}
       bgcolor={"#FFFCFC"}
       overflow={'hidden'}
+      sx={{ overflowY:'auto', scrollbarWidth: 'none' }}
       >
         {
           chats && chats.map((chat) => {
             return (
               <Box
               display={'flex'}
-              onClick={() => selectChatHandler(chat)}
-              width={'90%'}
-              flexDirection={'column'}
+              flexDirection={'row'}
+              alignItems={'center'}
               key={chat._id}
+              width={'90%'}
               borderRadius={2}
               boxShadow={"0px 1px 1px rgba(0, 0, 0, 0.1)"}
               padding={1}
@@ -65,14 +75,36 @@ function MyChats() {
               bgcolor= { selectedChat ? (selectedChat._id === chat._id ? "#2CB195" : '#f2f1f0') : '#f2f1f0'}
               color= { selectedChat ? (selectedChat._id === chat._id ? "white" : 'black') : 'black'}
               >
-                <Typography sx={{ textTransform: 'capitalize', fontFamily:'Roboto', fontSize:'17px'}} variant='h6'>{ chat.isGroupChat ? chat.chatName : (chat.users[0]._id === user._id ? chat.users[1].name : chat.users[0].name) }</Typography>
-                <Typography>{ chat.createdAt }</Typography>
+                <Avatar
+                  sx={{ marginRight: 2, cursor: 'pointer' }}
+                  alt={user.name}
+                  src={chat.isGroupChat ? chat.users[0].pic : (chat.users[0]._id === user._id ? chat.users[1].pic : chat.users[0].pic)}
+                  imgProps={{
+                    loading: 'lazy',
+                  }}
+                  onClick={() => handleAvatarClick(chat.isGroupChat ? chat.users[0].pic : (chat.users[0]._id === user._id ? chat.users[1].pic : chat.users[0].pic))}
+                />
+
+                <Box
+                display={'flex'}
+                flexDirection={'column'}
+                onClick={() => selectChatHandler(chat)} 
+                >
+                  <Typography sx={{ textTransform: 'capitalize', fontFamily:'Roboto', fontSize:'17px'}} variant='h6'>{ chat.isGroupChat ? chat.chatName : (chat.users[0]._id === user._id ? chat.users[1].name : chat.users[0].name) }</Typography>
+                  <Typography>{ chat.createdAt }</Typography>
+                </Box>
               </Box>
             )
           })
         }
       </Stack>
     </Box>
+    <FullscreenImageModal
+    open={imageModalOpen} 
+    handleClose={() => setImageModalOpen(false)} 
+    imgSrc={selectedImage} 
+    alt="Chat Avatar"
+    />
     </Box>
   )
 }
