@@ -5,6 +5,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
+import { useChatContext } from '../context/ChatProvider';
 
 const Root = styled('div')(
   ({ theme }) => `
@@ -23,11 +24,11 @@ const Label = styled('label')`
 
 const InputWrapper = styled('div')(
   ({ theme }) => `
-  width: 100%;
+  width: 97%;
   border: 1px solid ${theme.palette.mode === 'dark' ? '#434343' : '#d9d9d9'};
   background-color: ${theme.palette.mode === 'dark' ? '#141414' : '#fff'};
   border-radius: 4px;
-  padding: 1px;
+  padding: 5px;
   display: flex;
   flex-wrap: wrap;
 
@@ -156,7 +157,9 @@ const Listbox = styled('ul')(
 `,
 );
 
-const MultiSelect = ({ setMembers, users }) => {
+const MultiSelect = ({ setMembers, users, defaultUsers }) => {
+  const { user } = useChatContext();
+  
   const {
     getRootProps,
     getInputLabelProps,
@@ -170,7 +173,8 @@ const MultiSelect = ({ setMembers, users }) => {
     setAnchorEl,
   } = useAutocomplete({
     id: 'customized-hook-demo',
-    defaultValue: [users[0]],
+    defaultValue: defaultUsers ? users.filter((user) => defaultUsers.some(u => u._id === user._id)) : [user],
+    isOptionEqualToValue: (option, selected) => option._id === selected._id,
     multiple: true,
     options: users,
     onChange: (event, newValue) => {
@@ -183,6 +187,8 @@ const MultiSelect = ({ setMembers, users }) => {
     },
     getOptionLabel: (option) => option.name,
   });
+
+
 
   return (
     <Root>

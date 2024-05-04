@@ -31,12 +31,12 @@ const Label = styled('label')`
   flex-grow: 1;
 `;
 
-function CreateGCModel({ children, user }) {
-  const [open, setOpen] = React.useState(false);
+function UpdateGCModel({ children, user, selectedGroupChat, setopenEditGroupModel, openEditGroupModel }) {
   const [groupChatData, setgroupChatData] = React.useState({
-    chatName : null,
-    groupMembers : []
+    chatName : selectedGroupChat.chatName,
+    groupMembers : selectedGroupChat.users
   });
+
   const [toster, setToster] = React.useState({
     open: false,
     severity: "success",
@@ -44,17 +44,8 @@ function CreateGCModel({ children, user }) {
   });
   const { users, accessToken } = useChatContext();
 
-  const handleOpen = (event) => {
-    event.stopPropagation(); // Prevent event from propagating to parent components
-    setOpen(true);
-  };
-
   const handleClose = () => {
-    setgroupChatData({
-    chatName : null,
-    groupMembers : []
-    });
-    setOpen(false);
+    setopenEditGroupModel(false);
   }
 
   const handleTosterClose = () => {
@@ -76,43 +67,40 @@ function CreateGCModel({ children, user }) {
 
   const submitHandler = async() => {
     try {
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
         }
+        console.log(accessToken);
+        const groupMembers = groupChatData.groupMembers.map((member) => member._id);
+        const { data } = await axios.post('/api/chats/updateGroupChat', {
+          groupId : selectedGroupChat._id,
+          groupName : groupChatData.chatName,
+          groupMembers : groupMembers
+        },config);
+        console.log('gc updated',data);
+        setopenEditGroupModel(false);
+        setToster({
+            open: true,
+            severity: "success",
+            message: "Group Chat updated successfully",
+        });
+      } catch (error) {
+        console.log(error);
+        setToster({
+          open: true,
+          severity: "error",
+          message: error.response?.data?.message ? error.response.data.message : error.message,
+        });
+        setopenEditGroupModel(false);
       }
-      console.log(accessToken);
-      const groupMembers = groupChatData.groupMembers.map((member) => member._id);
-      const { data } = await axios.post('/api/chats/createGroupChat', {
-        groupName : groupChatData.chatName,
-        groupMembers : groupMembers
-      },config);
-      console.log('gc created',data);
-      setgroupChatData({
-      chatName : null,
-      groupMembers : []
-      });
-      setOpen(false);
-      setToster({
-        open: true,
-        severity: "success",
-        message: "Group Chat created successfully",
-      });
-    } catch (error) {
-      console.log(error);
-      setToster({
-        open: true,
-        severity: "error",
-        message: error.response?.data?.message ? error.response.data.message : error.message,
-      });
-    }
   }
 
   return (
     <div>
-      <span sx={{ color:'black', fontSize:'15px', textTransform:'capitalize'}} onClick={handleOpen}>{children}</span>
       <Modal
-        open={open}
+        open={openEditGroupModel}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -128,7 +116,7 @@ function CreateGCModel({ children, user }) {
            height={'50%'}
           >
             <Label>Group Name</Label>
-            <TextField sx={{ width:'100%', flexGrow:2}} size='small' onChange={chatNameHandler} id="outlined-basic" label="Chat Name" variant="outlined" />
+            <TextField defaultValue={selectedGroupChat.chatName} sx={{ width:'100%', flexGrow:2}} size='small' onChange={chatNameHandler} id="outlined-basic" label="Chat Name" variant="outlined" />
           </Box>
 
           <Box
@@ -137,17 +125,19 @@ function CreateGCModel({ children, user }) {
            width={'100%'}
            height={'45%'}
           >
-            <MultiSelect setMembers={setgroupChatData} users={users} />
+            <MultiSelect setMembers={setgroupChatData} users={users} defaultUsers={selectedGroupChat.users} />
           </Box>
 
-          <Button onClick={submitHandler} variant='contained' sx={{ marginTop: '10px' }}>Create</Button>
+          <Button onClick={submitHandler} variant='contained' sx={{ marginTop: '10px' }}>Update</Button>
         </Box>
       </Modal>
-      {
-        toster.open && (<Toster Toster={toster} handleClose={handleTosterClose} />)
-      }
+      <Box>
+        {
+            toster.open && (<Toster Toster={toster} handleClose={handleTosterClose} />)
+        }
+      </Box>
     </div>
   )
 }
 
-export default CreateGCModel;
+export default UpdateGCModel;

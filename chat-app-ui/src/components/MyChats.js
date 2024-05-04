@@ -44,16 +44,9 @@ function MyChats() {
           <Button variant='outlined' startIcon={<AddIcon />}>ADD GROUP</Button>
         </CreateGCModel>
       </Box>
-      {/* <Box
-        width={'95%'}
-        height={'100%'}
-        margin={1}
-        overflow={'hidden'}
-      > */}
         <Stack
           width={'100%'}
           height={'90%'}
-          // padding={1}
           bgcolor={"#FFFCFC"}
           overflow={'hidden'}
           sx={{ overflowY:'auto' }}
@@ -96,7 +89,7 @@ function MyChats() {
             })
           }
         </Stack>
-      {/* </Box> */}
+
       <FullscreenImageModal
         open={imageModalOpen} 
         handleClose={() => setImageModalOpen(false)} 

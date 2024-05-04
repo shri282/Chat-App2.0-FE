@@ -7,6 +7,8 @@ import SendIcon from '@mui/icons-material/Send';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 import InputAdornment from '@mui/material/InputAdornment';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { Avatar } from '@mui/material';
+import FullscreenImageModal from '../ui components/FullScreenImageModel';
 
 const OuterBox = styled('Box')`
   width: 60%;
@@ -30,6 +32,8 @@ const InnerBox = styled('Box')`
 function ChatBox() {
   
   const { selectedChat } = useChatContext();
+  const [openImageModel, setOpenImageModel] = React.useState(false);
+  const { user } = useChatContext();
 
   const attachFileHandler = () => {
     console.log('working...');
@@ -42,10 +46,24 @@ function ChatBox() {
       (
         <OuterBox>
           <InnerBox>
-            <Typography>chatname</Typography>
+            <Box
+            display={'flex'}
+            alignItems={'center'}
+            >
+              <Avatar
+                sx={{ marginRight: 2, cursor: 'pointer' }}
+                alt={selectedChat.users[0].name}
+                src={selectedChat.isGroupChat ? selectedChat.users[0].pic : selectedChat.users[0]._id === user._id ? selectedChat.users[1].pic : selectedChat.users[0].pic}
+                imgProps={{
+                  loading: 'lazy',
+                }}
+                onClick={() => setOpenImageModel(true)}
+              />
+              <Typography textTransform={'capitalize'}>{selectedChat.chatName}</Typography>
+            </Box>
             <ChatMenu />
           </InnerBox>
-          <Box sx={{ backgroundImage:"url('/images/bg.jpg')", backgroundSize:'cover'}} flexGrow={2}>
+          <Box sx={{ backgroundImage:"url('/images/kristina-kashtanova-EwpUsHDmEwg-unsplash.jpg')", backgroundSize:'cover'}} flexGrow={2}>
 
           </Box>
           <Box 
@@ -53,7 +71,6 @@ function ChatBox() {
             display={'flex'}
             alignItems={'center'}
             justifyContent={'space-between'}
-            bgcolor={'#f0f2f5'}
           >
             <TextField 
               fullWidth 
@@ -93,6 +110,12 @@ function ChatBox() {
               }}
             />
           </Box>
+          <FullscreenImageModal
+            open={openImageModel} 
+            handleClose={() => setOpenImageModel(false)} 
+            imgSrc={selectedChat.isGroupChat ? selectedChat.users[0].pic : selectedChat.users[0]._id === user._id ? selectedChat.users[1].pic : selectedChat.users[0].pic} 
+            alt="Chat Avatar"
+          />
         </OuterBox>
       ) 
       : 
@@ -111,7 +134,7 @@ function ChatBox() {
             display={'flex'}
             flexDirection={'column'}
             alignItems={'center'}
-            paddingTop={20}
+            paddingTop={30}
           >
             <img width={250} alt='sa' src='https://static.whatsapp.net/rsrc.php/v3/yX/r/dJq9qKG5lDb.png'></img>
             <Box
@@ -124,9 +147,8 @@ function ChatBox() {
             </Box>
           </Box>
         </Box>
-
       )
-
+      
     }
     </>
   )

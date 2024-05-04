@@ -39,7 +39,7 @@ function ChatPage() {
         display={'flex'}
         width={'100%'}
         flexGrow={1}
-        marginTop={1}
+        marginTop={3}
         marginBottom={1}
         flexDirection={'row'}
         justifyContent={'space-between'}

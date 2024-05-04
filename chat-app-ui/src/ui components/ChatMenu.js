@@ -14,12 +14,15 @@ import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import GroupRemoveIcon from '@mui/icons-material/GroupRemove';
 import { useChatContext } from '../context/ChatProvider';
 import ProfileModel from './ProfileModel';
+import UpdateGCModel from './UpdateGCModel';
 
 function ChatMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const { user, selectedChat } = useChatContext();
   const [openProfile, setOpenProfile] = React.useState(false);
+  const [openEditGroupModel, setopenEditGroupModel] = React.useState(false)
+  console.log(selectedChat.groupAdmin && selectedChat.groupAdmin._id);
 
   const handleProfileOpen = () => {
     handleClose();
@@ -32,10 +35,15 @@ function ChatMenu() {
     setAnchorEl(null);
   };
 
+  const editGroupHandler = () => {
+    handleClose();
+    setopenEditGroupModel(true);
+  }
+
 
   return (
     <React.Fragment>
-      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', paddingRight:'20px' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', paddingRight:'-5px' }}>
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}
@@ -106,18 +114,34 @@ function ChatMenu() {
           </ListItemIcon>
           Mute Notifications
         </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <GroupRemoveIcon />
-          </ListItemIcon>
-          Leave Group
-        </MenuItem>
+        {
+          selectedChat && selectedChat.isGroupChat && 
+          <MenuItem onClick={handleClose}>
+            <ListItemIcon>
+              <GroupRemoveIcon />
+            </ListItemIcon>
+            Leave Group
+          </MenuItem>
+        }
+        {
+          selectedChat && selectedChat.isGroupChat && 
+          selectedChat.groupAdmin._id === user._id && 
+          <MenuItem onClick={editGroupHandler}>
+            <ListItemIcon>
+              <GroupRemoveIcon />
+            </ListItemIcon>
+            Edit Group
+          </MenuItem>
+        }
       </Menu>
       <Box
       display={'none'}
       >
         {
           <ProfileModel setOpenProfile={setOpenProfile} openProfile={openProfile} user={selectedChat.users[0]._id === user._id ? selectedChat.users[1] : selectedChat.users[0]} />
+        }
+        {
+          selectedChat && <UpdateGCModel selectedGroupChat={selectedChat} openEditGroupModel={openEditGroupModel} setopenEditGroupModel={setopenEditGroupModel} user={user} />
         }
       </Box>
     </React.Fragment>

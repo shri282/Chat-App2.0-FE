@@ -5,7 +5,12 @@ function Toster({ Toster, handleClose}) {
 
   return (
     <div>
-        <Snackbar open={Toster.open} autoHideDuration={6000} onClose={handleClose}>
+        <Snackbar 
+          open={Toster.open}  
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          autoHideDuration={6000} 
+          onClose={handleClose}
+        >
             <Alert
             onClose={handleClose}
             severity={Toster.severity}

@@ -86,6 +86,29 @@ const createGroupChat = async(req, res) => {
 
 }
 
+const updateGroupChat = async(req, res) => {
+    let { groupName, groupMembers, groupId } = req.body;
+    console.log(groupId,groupName,groupMembers);
+    if(!groupName || !groupMembers || !groupId) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+    if(groupMembers.length < 2) {
+        return res.status(400).json({ message: "Group must have at least 2 members" });
+    }
+    groupMembers.push(req.user._id);
+    try {
+       const updatedGroupChat = await Chat.findByIdAndUpdate(groupId, {
+        chatName: groupName,
+        users: groupMembers,
+       }, { new: true });
+       console.log(updatedGroupChat);
+       return res.status(200).json(updatedGroupChat);
+    } catch(error) {
+        console.log(error);
+        return res.status(500).json({ message: error.message });
+    }
+}
+
 const renameGroup = async(req, res) => {
     const { groupId, newGroupName } = req.body;
     if(!groupId || !newGroupName) {
@@ -132,6 +155,7 @@ const addMember = async(req, res) => {
     }
 
 }
+
 const removeMember = async(req, res) => {
     const { groupId, memberToRemove } = req.body;
     if(!groupId || !memberToRemove) {
@@ -162,7 +186,8 @@ const chatHandlers = {
     createGroupChat,
     renameGroup,
     addMember,
-    removeMember
+    removeMember,
+    updateGroupChat
 }
 
 export default chatHandlers;
