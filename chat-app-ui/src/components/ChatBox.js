@@ -9,6 +9,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Avatar } from '@mui/material';
 import FullscreenImageModal from '../ui components/FullScreenImageModel';
+import EmojiPicker from 'emoji-picker-react';
 
 const OuterBox = styled('Box')`
   width: 60%;
@@ -34,10 +35,22 @@ function ChatBox() {
   const { selectedChat } = useChatContext();
   const [openImageModel, setOpenImageModel] = React.useState(false);
   const { user } = useChatContext();
+  const [showEmojiPicker, setShowEmojiPicker] = React.useState(false);
+  const messageInputRef = React.useRef(null);
+  const [message, setMessage] = React.useState('');
 
-  const attachFileHandler = () => {
-    console.log('working...');
-  }
+  const onEmojiClick = (event, emojiObject) => {
+    // const cursorPosition = messageInputRef.current.selectionStart;
+    // const text = message.substring(0, cursorPosition) + emojiObject.emoji + message.substring(cursorPosition);
+    // setMessage(text);
+    // messageInputRef.current.focus();
+  };
+
+  const fileInputRef = React.useRef(null);
+
+  const handleFileInputClick = () => {
+    fileInputRef.current.click();
+  };
 
   return (
     <>
@@ -75,20 +88,27 @@ function ChatBox() {
             <TextField 
               fullWidth 
               size='small' 
+              // ref={messageInputRef}
+              onChange={(e) => setMessage(e.target.value)}
               sx={{ marginRight:'10px', borderStyle:'none', borderRadius:'2px', boxShadow:'0px 4px 20px rgba(0, 0, 0, 0.1)' }} 
               InputProps={{
                 startAdornment: (
                   <InputAdornment position='start'>
-                      <SentimentSatisfiedAltIcon sx={{ ":hover":{ cursor:'pointer' }, marginLeft:'-8px' }} />
+                      <SentimentSatisfiedAltIcon onClick={() => setShowEmojiPicker(!showEmojiPicker)} sx={{ ":hover":{ cursor:'pointer' }, marginLeft:'-8px' }} />
                   </InputAdornment>
                 ),
                 endAdornment: (
-                  <InputAdornment position='end'> 
-                      <AttachFileIcon sx={{ ":hover":{ cursor:'pointer' }, marginRight:'-8px'}} />
+                  <InputAdornment onClick={() => {
+                    console.log("working");
+                  }} position='end'> 
+                      <AttachFileIcon onClick={handleFileInputClick} sx={{ ":hover":{ cursor:'pointer' }, marginRight:'-8px'}} />
                       <input
                         type="file"
+                        ref={fileInputRef}
                         hidden
-                        onClick={attachFileHandler}
+                        onChange={(e) => {
+                          console.log(e.target.files);
+                        }}
                         style={{ display: 'none' }} 
                       />
                   </InputAdornment>
@@ -116,6 +136,9 @@ function ChatBox() {
             imgSrc={selectedChat.isGroupChat ? selectedChat.users[0].pic : selectedChat.users[0]._id === user._id ? selectedChat.users[1].pic : selectedChat.users[0].pic} 
             alt="Chat Avatar"
           />
+          {showEmojiPicker && (
+          <EmojiPicker onEmojiClick={onEmojiClick} />
+          )}
         </OuterBox>
       ) 
       : 
