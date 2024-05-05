@@ -5,11 +5,10 @@ import { useChatContext } from '../context/ChatProvider';
 import { styled } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
-import InputAdornment from '@mui/material/InputAdornment';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Avatar } from '@mui/material';
 import FullscreenImageModal from '../ui components/FullScreenImageModel';
-import EmojiPicker from 'emoji-picker-react';
+import EmojiPickerModel from '../ui components/EmojiPickerModel';
 
 const OuterBox = styled('Box')`
   width: 60%;
@@ -36,21 +35,29 @@ function ChatBox() {
   const [openImageModel, setOpenImageModel] = React.useState(false);
   const { user } = useChatContext();
   const [showEmojiPicker, setShowEmojiPicker] = React.useState(false);
-  const messageInputRef = React.useRef(null);
+  const [popupAnchorEl, setPopupAnchorEl] = React.useState(null);
+  const [startIndex, setStartIndex] = React.useState(0);
+  const [endIndex, setEndIndex] = React.useState(0);
   const [message, setMessage] = React.useState('');
-
-  const onEmojiClick = (event, emojiObject) => {
-    // const cursorPosition = messageInputRef.current.selectionStart;
-    // const text = message.substring(0, cursorPosition) + emojiObject.emoji + message.substring(cursorPosition);
-    // setMessage(text);
-    // messageInputRef.current.focus();
+  const fileInputRef = React.useRef(null);
+  
+  const popupHandleClick = (event) => {
+    setShowEmojiPicker(!showEmojiPicker);
+    setPopupAnchorEl(popupAnchorEl ? null : event.currentTarget);
   };
 
-  const fileInputRef = React.useRef(null);
+  const onEmojiClick = (event, emojiObject) => {
+    const text = message.substring(0, startIndex) + emojiObject.target + message.substring(endIndex);
+    setMessage(text);
+  };
 
   const handleFileInputClick = () => {
     fileInputRef.current.click();
   };
+
+  const sentMessageHandler = () => {
+    console.log(message);
+  }
 
   return (
     <>
@@ -79,45 +86,31 @@ function ChatBox() {
           <Box sx={{ backgroundImage:"url('/images/kristina-kashtanova-EwpUsHDmEwg-unsplash.jpg')", backgroundSize:'cover'}} flexGrow={2}>
 
           </Box>
+          <EmojiPickerModel popupAnchorEl={popupAnchorEl} showEmojiPicker={showEmojiPicker} onEmojiClick={onEmojiClick} />
           <Box 
             padding={1}
             display={'flex'}
             alignItems={'center'}
             justifyContent={'space-between'}
           >
+            <SentimentSatisfiedAltIcon onClick={popupHandleClick} sx={{ ":hover":{ cursor:'pointer', backgroundColor:'#f2eeed' }, padding:'3px', marginRight:'5px', borderRadius:'3px' }} />
+            <AttachFileIcon onClick={handleFileInputClick} sx={{ ":hover":{ cursor:'pointer', backgroundColor:'#f2eeed' }, padding:'3px', marginRight:'5px', borderRadius:'3px' }} />
             <TextField 
               fullWidth 
               size='small' 
-              // ref={messageInputRef}
+              placeholder='Type a message'
+              onSelect={(e) => {
+                setStartIndex(e.target.selectionStart);
+                setEndIndex(e.target.selectionEnd);
+              }}
+              value={message}
               onChange={(e) => setMessage(e.target.value)}
               sx={{ marginRight:'10px', borderStyle:'none', borderRadius:'2px', boxShadow:'0px 4px 20px rgba(0, 0, 0, 0.1)' }} 
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>
-                      <SentimentSatisfiedAltIcon onClick={() => setShowEmojiPicker(!showEmojiPicker)} sx={{ ":hover":{ cursor:'pointer' }, marginLeft:'-8px' }} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment onClick={() => {
-                    console.log("working");
-                  }} position='end'> 
-                      <AttachFileIcon onClick={handleFileInputClick} sx={{ ":hover":{ cursor:'pointer' }, marginRight:'-8px'}} />
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        hidden
-                        onChange={(e) => {
-                          console.log(e.target.files);
-                        }}
-                        style={{ display: 'none' }} 
-                      />
-                  </InputAdornment>
-                )
-              }}
             />
             <Button
               variant="contained"
               startIcon={<SendIcon />}
+              onClick={sentMessageHandler}
               sx={{
                 justifyContent: 'center',
                 '& .MuiButton-startIcon': {
@@ -136,9 +129,6 @@ function ChatBox() {
             imgSrc={selectedChat.isGroupChat ? selectedChat.users[0].pic : selectedChat.users[0]._id === user._id ? selectedChat.users[1].pic : selectedChat.users[0].pic} 
             alt="Chat Avatar"
           />
-          {showEmojiPicker && (
-          <EmojiPicker onEmojiClick={onEmojiClick} />
-          )}
         </OuterBox>
       ) 
       : 
