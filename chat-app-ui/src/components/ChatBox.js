@@ -12,7 +12,7 @@ import EmojiPickerModel from '../ui components/EmojiPickerModel';
 
 const OuterBox = styled('Box')`
   width: 60%;
-  height: 87vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   background-color: white;
@@ -87,6 +87,7 @@ function ChatBox() {
 
           </Box>
           <EmojiPickerModel popupAnchorEl={popupAnchorEl} showEmojiPicker={showEmojiPicker} onEmojiClick={onEmojiClick} />
+          <input type="file" ref={fileInputRef} style={{ display: 'none' }} />
           <Box 
             padding={1}
             display={'flex'}
@@ -135,7 +136,7 @@ function ChatBox() {
       (
         <Box
           width= {'60%'}
-          height= {'87vh'}
+          height= {'100%'}
           display= {'flex'}
           flexDirection={'column'}
           bgcolor={'white'}
@@ -145,9 +146,11 @@ function ChatBox() {
         >
           <Box
             display={'flex'}
+            width={'100%'}
+            height={'100%'}
             flexDirection={'column'}
             alignItems={'center'}
-            paddingTop={30}
+            paddingTop={20}
           >
             <img width={250} alt='sa' src='https://static.whatsapp.net/rsrc.php/v3/yX/r/dJq9qKG5lDb.png'></img>
             <Box

@@ -23,7 +23,7 @@ function MyChats() {
   return (
     <Box
       width={'40%'}
-      height={'87vh'}
+      height={'100%'}
       display={'flex'}
       flexDirection={'column'}
       borderRight={'1px solid #E0DFDF'}

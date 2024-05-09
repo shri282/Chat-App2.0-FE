@@ -27,7 +27,8 @@ function ChatPage() {
             alignItems: 'center',
             backgroundColor: 'white',
             padding: '5px 10px 5px 10px', 
-            border: '1px solid #E0DFDF'
+            border: '1px solid #E0DFDF',
+            flexGrow: 1
           }}
         >
           <SideDrawer />
@@ -38,11 +39,13 @@ function ChatPage() {
       <Box
         display={'flex'}
         width={'100%'}
-        flexGrow={1}
-        marginTop={3}
-        marginBottom={1}
+        height={'100%'}
+        flexGrow={2}
+        marginTop={2}
+        marginBottom={2}
         flexDirection={'row'}
         justifyContent={'space-between'}
+        overflow={'hidden'}
       >
         { user && <MyChats /> }
         { user && <ChatBox />}
