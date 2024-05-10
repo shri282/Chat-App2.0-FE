@@ -42,7 +42,7 @@ function UpdateGCModel({ children, user, selectedGroupChat, setopenEditGroupMode
     severity: "success",
     message: "",
   });
-  const { users, accessToken } = useChatContext();
+  const { users, accessToken, setChats } = useChatContext();
 
   const handleClose = () => {
     setopenEditGroupModel(false);
@@ -72,19 +72,20 @@ function UpdateGCModel({ children, user, selectedGroupChat, setopenEditGroupMode
             'Authorization': `Bearer ${accessToken}`
           }
         }
-        console.log(accessToken);
         const groupMembers = groupChatData.groupMembers.map((member) => member._id);
         const { data } = await axios.post('/api/chats/updateGroupChat', {
           groupId : selectedGroupChat._id,
           groupName : groupChatData.chatName,
           groupMembers : groupMembers
         },config);
-        console.log('gc updated',data);
         setopenEditGroupModel(false);
         setToster({
             open: true,
             severity: "success",
             message: "Group Chat updated successfully",
+        });
+        setChats((prevChats) => {
+          return [...prevChats.filter((chat) => chat._id !== selectedGroupChat._id), data]
         });
       } catch (error) {
         console.log(error);

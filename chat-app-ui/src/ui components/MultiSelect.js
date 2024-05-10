@@ -173,7 +173,7 @@ const MultiSelect = ({ setMembers, users, defaultUsers }) => {
     setAnchorEl,
   } = useAutocomplete({
     id: 'customized-hook-demo',
-    defaultValue: defaultUsers ? users.filter((user) => defaultUsers.some(u => u._id === user._id)) : [user],
+    defaultValue: defaultUsers ? [...users.filter((user) => defaultUsers.some(u => u._id === user._id)),user] : [user],
     isOptionEqualToValue: (option, selected) => option._id === selected._id,
     multiple: true,
     options: users,

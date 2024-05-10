@@ -64,7 +64,6 @@ const createGroupChat = async(req, res) => {
     if(groupMembers.length < 2) {
         return res.status(400).json({ message: "Group must have at least 2 members" });
     }
-    groupMembers.push(req.user._id);
     try {
        const newGroupChat = await Chat.create({
             isGroupChat: true,
@@ -95,12 +94,11 @@ const updateGroupChat = async(req, res) => {
     if(groupMembers.length < 2) {
         return res.status(400).json({ message: "Group must have at least 2 members" });
     }
-    groupMembers.push(req.user._id);
     try {
        const updatedGroupChat = await Chat.findByIdAndUpdate(groupId, {
         chatName: groupName,
         users: groupMembers,
-       }, { new: true });
+       }, { new: true }).populate('users', '-password').populate('groupAdmin', '-password');
        console.log(updatedGroupChat);
        return res.status(200).json(updatedGroupChat);
     } catch(error) {

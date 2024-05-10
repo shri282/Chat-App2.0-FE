@@ -42,10 +42,10 @@ function CreateGCModel({ children, user }) {
     severity: "success",
     message: "",
   });
-  const { users, accessToken } = useChatContext();
+  const { users, accessToken, setChats } = useChatContext();
 
   const handleOpen = (event) => {
-    event.stopPropagation(); // Prevent event from propagating to parent components
+    event.stopPropagation(); 
     setOpen(true);
   };
 
@@ -81,23 +81,20 @@ function CreateGCModel({ children, user }) {
           'Authorization': `Bearer ${accessToken}`
         }
       }
-      console.log(accessToken);
       const groupMembers = groupChatData.groupMembers.map((member) => member._id);
       const { data } = await axios.post('/api/chats/createGroupChat', {
         groupName : groupChatData.chatName,
         groupMembers : groupMembers
       },config);
-      console.log('gc created',data);
-      setgroupChatData({
-      chatName : null,
-      groupMembers : []
-      });
       setOpen(false);
       setToster({
         open: true,
         severity: "success",
         message: "Group Chat created successfully",
       });
+      setChats((prevChats) => {
+        return [...prevChats, data];
+      })
     } catch (error) {
       console.log(error);
       setToster({

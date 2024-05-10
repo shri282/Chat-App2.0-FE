@@ -34,15 +34,14 @@ function ChatBox() {
   const { selectedChat } = useChatContext();
   const [openImageModel, setOpenImageModel] = React.useState(false);
   const { user } = useChatContext();
-  const [showEmojiPicker, setShowEmojiPicker] = React.useState(false);
   const [popupAnchorEl, setPopupAnchorEl] = React.useState(null);
   const [startIndex, setStartIndex] = React.useState(0);
   const [endIndex, setEndIndex] = React.useState(0);
   const [message, setMessage] = React.useState('');
   const fileInputRef = React.useRef(null);
+  const emojiPickerRef = React.useRef(null);
   
   const popupHandleClick = (event) => {
-    setShowEmojiPicker(!showEmojiPicker);
     setPopupAnchorEl(popupAnchorEl ? null : event.currentTarget);
   };
 
@@ -86,7 +85,7 @@ function ChatBox() {
           <Box sx={{ backgroundImage:"url('/images/kristina-kashtanova-EwpUsHDmEwg-unsplash.jpg')", backgroundSize:'cover'}} flexGrow={2}>
 
           </Box>
-          <EmojiPickerModel popupAnchorEl={popupAnchorEl} showEmojiPicker={showEmojiPicker} onEmojiClick={onEmojiClick} />
+          <EmojiPickerModel popupAnchorEl={popupAnchorEl} emojiPickerRef={emojiPickerRef} setPopupAnchorEl={setPopupAnchorEl} onEmojiClick={onEmojiClick} handleClose={popupHandleClick} />
           <input type="file" ref={fileInputRef} style={{ display: 'none' }} />
           <Box 
             padding={1}
@@ -94,7 +93,7 @@ function ChatBox() {
             alignItems={'center'}
             justifyContent={'space-between'}
           >
-            <SentimentSatisfiedAltIcon onClick={popupHandleClick} sx={{ ":hover":{ cursor:'pointer', backgroundColor:'#f2eeed' }, padding:'3px', marginRight:'5px', borderRadius:'3px' }} />
+            <SentimentSatisfiedAltIcon ref={emojiPickerRef} onClick={popupHandleClick} sx={{ ":hover":{ cursor:'pointer', backgroundColor:'#f2eeed' }, padding:'3px', marginRight:'5px', borderRadius:'3px' }} />
             <AttachFileIcon onClick={handleFileInputClick} sx={{ ":hover":{ cursor:'pointer', backgroundColor:'#f2eeed' }, padding:'3px', marginRight:'5px', borderRadius:'3px' }} />
             <TextField 
               fullWidth 
