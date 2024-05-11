@@ -17,7 +17,7 @@ function AuthPage() {
     };
   
     return (
-        <Container sx={{ width: '100%', typography: 'body1', marginTop:'12%', marginLeft:'30%'}}>
+        <Container sx={{ width: '100%', typography: 'body1', marginTop:'12%', marginLeft:'30%', marginBottom:'20px'}}>
             <Box sx={{ width: '44%', backgroundColor: 'white', marginBottom:'10px', padding: '8px', fontSize:'20px' , display: 'flex', justifyContent: 'center', fontWeight:800, color:'grey' }}>
             CHAT-APP
             </Box>

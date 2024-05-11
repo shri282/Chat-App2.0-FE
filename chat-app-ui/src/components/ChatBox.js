@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState, useRef } from 'react'
 import { Box, Button, TextField, Typography } from '@mui/material'
 import ChatMenu from '../ui components/ChatMenu';
 import { useChatContext } from '../context/ChatProvider';
@@ -9,6 +9,7 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Avatar } from '@mui/material';
 import FullscreenImageModal from '../ui components/FullScreenImageModel';
 import EmojiPickerModel from '../ui components/EmojiPickerModel';
+import axios from '../config/axios';
 
 const OuterBox = styled('Box')`
   width: 60%;
@@ -31,22 +32,27 @@ const InnerBox = styled('Box')`
 
 function ChatBox() {
   
-  const { selectedChat } = useChatContext();
-  const [openImageModel, setOpenImageModel] = React.useState(false);
+  const { selectedChat, accessToken } = useChatContext();
+  const [openImageModel, setOpenImageModel] = useState(false);
   const { user } = useChatContext();
-  const [popupAnchorEl, setPopupAnchorEl] = React.useState(null);
-  const [startIndex, setStartIndex] = React.useState(0);
-  const [endIndex, setEndIndex] = React.useState(0);
-  const [message, setMessage] = React.useState('');
-  const fileInputRef = React.useRef(null);
-  const emojiPickerRef = React.useRef(null);
-  
+  const [popupAnchorEl, setPopupAnchorEl] = useState(null);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(0);
+  const [message, setMessage] = useState('');
+  const fileInputRef = useRef(null);
+  const emojiPickerRef = useRef(null);
+  const [messages, setMessages] = useState([]);
+  console.log(messages);
+
   const popupHandleClick = (event) => {
     setPopupAnchorEl(popupAnchorEl ? null : event.currentTarget);
   };
 
   const onEmojiClick = (event, emojiObject) => {
-    const text = message.substring(0, startIndex) + emojiObject.target + message.substring(endIndex);
+    const uniCodeEmoji = String.fromCodePoint("0x" + event.unified);
+    const text = message.substring(0, startIndex) + uniCodeEmoji + message.substring(endIndex);
+    setStartIndex(startIndex + uniCodeEmoji.length);
+    setEndIndex(endIndex + uniCodeEmoji.length);
     setMessage(text);
   };
 
@@ -54,8 +60,44 @@ function ChatBox() {
     fileInputRef.current.click();
   };
 
-  const sentMessageHandler = () => {
-    console.log(message);
+  const fetchMessages = useCallback(async() => {
+    if(!selectedChat) return;
+    try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+      const { data } = await axios.get(`/api/messages/${selectedChat._id}`, config);
+      setMessages(data);
+    } catch(error) {
+      console.log(error);
+    }
+  }, [selectedChat, accessToken]);
+
+  useEffect(() => {
+    fetchMessages();
+  }, [selectedChat, fetchMessages]);
+
+  const sentMessageHandler = async(event) => {
+    if(event.key !== 'Enter') return;
+    try {
+      if(message.trim() === '' || !selectedChat) return;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+      const { data } = await axios.post('/api/messages/sentMessage', {
+        chatId: selectedChat._id,
+        message,
+      }, config);
+      setMessage('');
+      console.log(data);
+    } catch(error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -78,7 +120,7 @@ function ChatBox() {
                 }}
                 onClick={() => setOpenImageModel(true)}
               />
-              <Typography textTransform={'capitalize'}>{selectedChat.chatName}</Typography>
+              <Typography textTransform={'capitalize'}>{selectedChat.isGroupChat ? selectedChat.chatName : (selectedChat.users[0]._id === user._id ? selectedChat.users[1].name : selectedChat.users[0].name)}</Typography>
             </Box>
             <ChatMenu />
           </InnerBox>
@@ -103,6 +145,7 @@ function ChatBox() {
                 setStartIndex(e.target.selectionStart);
                 setEndIndex(e.target.selectionEnd);
               }}
+              onKeyDown={sentMessageHandler}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               sx={{ marginRight:'10px', borderStyle:'none', borderRadius:'2px', boxShadow:'0px 4px 20px rgba(0, 0, 0, 0.1)' }} 
