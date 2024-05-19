@@ -10,6 +10,8 @@ import { Avatar } from '@mui/material';
 import FullscreenImageModal from '../ui components/FullScreenImageModel';
 import EmojiPickerModel from '../ui components/EmojiPickerModel';
 import axios from '../config/axios';
+import ScrollableMessages from './ScrollableMessages';
+import socket from '../socket/socket';
 
 const OuterBox = styled('Box')`
   width: 60%;
@@ -42,7 +44,6 @@ function ChatBox() {
   const fileInputRef = useRef(null);
   const emojiPickerRef = useRef(null);
   const [messages, setMessages] = useState([]);
-  console.log(messages);
 
   const popupHandleClick = (event) => {
     setPopupAnchorEl(popupAnchorEl ? null : event.currentTarget);
@@ -77,8 +78,10 @@ function ChatBox() {
 
   useEffect(() => {
     fetchMessages();
+    selectedChat && socket.emit('joinChat', selectedChat._id);
   }, [selectedChat, fetchMessages]);
 
+  
   const sentMessageHandler = async(event) => {
     if(event.key !== 'Enter') return;
     try {
@@ -89,16 +92,29 @@ function ChatBox() {
           'Authorization': `Bearer ${accessToken}`
         }
       }
+      setMessage('');
       const { data } = await axios.post('/api/messages/sentMessage', {
         chatId: selectedChat._id,
         message,
       }, config);
-      setMessage('');
+      setMessages([...messages, data]);
       console.log(data);
     } catch(error) {
       console.log(error);
     }
   }
+  
+  const socketEvents = useCallback(() => {
+    socket.on('newMessage', (message) => {
+      if(message.chat._id === selectedChat._id) {
+        setMessages([...messages, message]);
+      }
+    });
+  },[messages, selectedChat]);
+
+  useEffect(() => {
+    socketEvents();
+  },[socketEvents]);
 
   return (
     <>
@@ -125,7 +141,7 @@ function ChatBox() {
             <ChatMenu />
           </InnerBox>
           <Box sx={{ backgroundImage:"url('/images/kristina-kashtanova-EwpUsHDmEwg-unsplash.jpg')", backgroundSize:'cover'}} flexGrow={2}>
-
+              <ScrollableMessages messages={messages} />
           </Box>
           <EmojiPickerModel popupAnchorEl={popupAnchorEl} emojiPickerRef={emojiPickerRef} setPopupAnchorEl={setPopupAnchorEl} onEmojiClick={onEmojiClick} handleClose={popupHandleClick} />
           <input type="file" ref={fileInputRef} style={{ display: 'none' }} />

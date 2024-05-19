@@ -5,6 +5,7 @@ import userRouter from "./router/userRouter.js";
 import chatRouter from "./router/chatRouter.js";
 import messageRouter from "./router/messageRouter.js";
 import cors from "cors";
+import { Server } from "socket.io";
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
@@ -31,7 +32,22 @@ app.use((error, req, res, next) => {
 
 
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`server started on port localhost port ${PORT}....`);
 });
 
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("new connection", socket.id);
+  socket.on("joinChat", (chatId) => {
+    console.log("joining chat socketId",socket.id, chatId);
+    socket.join(chatId);
+  });
+});
+
+export default io;

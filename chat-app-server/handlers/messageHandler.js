@@ -1,6 +1,7 @@
 import Message from "../models/message.js";
 import Chat from "../models/chat.js";
 import User from "../models/user.js";
+import io from "../app.js";
 
 const sentMessage = async (req, res) => {
     try {
@@ -13,6 +14,7 @@ const sentMessage = async (req, res) => {
         
         populatedMessage = await User.populate(populatedMessage, { path: "chat.users", select: "-password" });
         await Chat.findByIdAndUpdate(chatId, { latestMessage: createdMessage._id });
+        io.to(chatId).emit("newMessage", populatedMessage);
         return res.status(201).json(populatedMessage);
     } catch(error) {
         console.log(error);
