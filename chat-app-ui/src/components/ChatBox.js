@@ -45,6 +45,7 @@ function ChatBox() {
   const emojiPickerRef = useRef(null);
   const [messages, setMessages] = useState([]);
 
+
   const popupHandleClick = (event) => {
     setPopupAnchorEl(popupAnchorEl ? null : event.currentTarget);
   };
@@ -76,11 +77,6 @@ function ChatBox() {
     }
   }, [selectedChat, accessToken]);
 
-  useEffect(() => {
-    fetchMessages();
-    selectedChat && socket.emit('joinChat', selectedChat._id);
-  }, [selectedChat, fetchMessages]);
-
   
   const sentMessageHandler = async(event) => {
     if(event.key !== 'Enter') return;
@@ -104,18 +100,27 @@ function ChatBox() {
     }
   }
   
-  const socketEvents = useCallback(() => {
-    socket.on('newMessage', (message) => {
-      if(message.chat._id === selectedChat._id) {
-        setMessages([...messages, message]);
-      }
-    });
-  },[messages, selectedChat]);
 
   useEffect(() => {
-    socketEvents();
-  },[socketEvents]);
+    fetchMessages();
+    selectedChat && socket.emit('joinChat', selectedChat._id);
+  }, [selectedChat, fetchMessages]);
 
+
+  useEffect(() => {
+    const handleNewMessage = (message) => {
+      if (message.chat._id === selectedChat._id) {
+        setMessages((prevMessages) => [...prevMessages, message]);
+      }
+    };
+    socket.on('newMessage', handleNewMessage);
+    
+    return () => {
+      socket.off('newMessage', handleNewMessage);
+    };
+  }, [selectedChat]);
+
+  
   return (
     <>
     {

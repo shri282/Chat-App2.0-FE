@@ -44,10 +44,16 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("new connection", socket.id);
+  
   socket.on("joinChat", (chatId) => {
     console.log("joining chat socketId",socket.id, chatId);
     socket.join(chatId);
   });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected", socket.id);
+  });
+
 });
 
 export default io;
