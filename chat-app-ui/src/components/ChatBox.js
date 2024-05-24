@@ -12,6 +12,7 @@ import EmojiPickerModel from '../ui components/EmojiPickerModel';
 import axios from '../config/axios';
 import ScrollableMessages from './ScrollableMessages';
 import socket from '../socket/socket';
+import { getChatProfilePic } from '../chatLogics';
 
 const OuterBox = styled('Box')`
   width: 60%;
@@ -28,7 +29,7 @@ const InnerBox = styled('Box')`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 6px;
   background-color: #f0f2f5;
 `;
 
@@ -44,6 +45,7 @@ function ChatBox() {
   const fileInputRef = useRef(null);
   const emojiPickerRef = useRef(null);
   const [messages, setMessages] = useState([]);
+  const messageRef = useRef(null);
 
 
   const popupHandleClick = (event) => {
@@ -79,7 +81,8 @@ function ChatBox() {
 
   
   const sentMessageHandler = async(event) => {
-    if(event.key !== 'Enter') return;
+    console.log(event);
+    if(event.key !== 'Enter' && event.type !== 'click') return;
     try {
       if(message.trim() === '' || !selectedChat) return;
       const config = {
@@ -94,6 +97,7 @@ function ChatBox() {
         message,
       }, config);
       setMessages([...messages, data]);
+      messageRef.current.scrollTop = messageRef.current.scrollHeight;
       console.log(data);
     } catch(error) {
       console.log(error);
@@ -110,7 +114,12 @@ function ChatBox() {
   useEffect(() => {
     const handleNewMessage = (message) => {
       if (message.chat._id === selectedChat._id) {
-        setMessages((prevMessages) => [...prevMessages, message]);
+        setMessages((prevMessages) => {
+          if (prevMessages.some((msg) => msg._id === message._id)) {
+            return prevMessages;
+          }
+          return [...prevMessages, message];
+        });
       }
     };
     socket.on('newMessage', handleNewMessage);
@@ -127,6 +136,7 @@ function ChatBox() {
       selectedChat ? 
       (
         <OuterBox>
+
           <InnerBox>
             <Box
             display={'flex'}
@@ -135,7 +145,7 @@ function ChatBox() {
               <Avatar
                 sx={{ marginRight: 2, cursor: 'pointer' }}
                 alt={selectedChat.users[0].name}
-                src={selectedChat.isGroupChat ? selectedChat.users[0].pic : selectedChat.users[0]._id === user._id ? selectedChat.users[1].pic : selectedChat.users[0].pic}
+                src={getChatProfilePic(selectedChat, user)}
                 imgProps={{
                   loading: 'lazy',
                 }}
@@ -145,9 +155,15 @@ function ChatBox() {
             </Box>
             <ChatMenu />
           </InnerBox>
-          <Box sx={{ backgroundImage:"url('/images/kristina-kashtanova-EwpUsHDmEwg-unsplash.jpg')", backgroundSize:'cover'}} flexGrow={2}>
-              <ScrollableMessages messages={messages} />
+
+          <Box 
+           overflow={'auto'} 
+           sx={{ backgroundImage:"url('/images/kristina-kashtanova-EwpUsHDmEwg-unsplash.jpg')", backgroundSize:'cover'}} flexGrow={2}
+           ref={messageRef}
+          >
+            <ScrollableMessages messages={messages} />
           </Box>
+
           <EmojiPickerModel popupAnchorEl={popupAnchorEl} emojiPickerRef={emojiPickerRef} setPopupAnchorEl={setPopupAnchorEl} onEmojiClick={onEmojiClick} handleClose={popupHandleClick} />
           <input type="file" ref={fileInputRef} style={{ display: 'none' }} />
           <Box 
@@ -190,7 +206,7 @@ function ChatBox() {
           <FullscreenImageModal
             open={openImageModel} 
             handleClose={() => setOpenImageModel(false)} 
-            imgSrc={selectedChat.isGroupChat ? selectedChat.users[0].pic : selectedChat.users[0]._id === user._id ? selectedChat.users[1].pic : selectedChat.users[0].pic} 
+            imgSrc={getChatProfilePic(selectedChat, user)} 
             alt="Chat Avatar"
           />
         </OuterBox>

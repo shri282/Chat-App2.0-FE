@@ -9,7 +9,9 @@ function ScrollableMessages({ messages }) {
   const { user } = useChatContext();
 
   return (
-    <ScrollableFeed>
+    <ScrollableFeed
+      forceScroll={true} 
+    >
         {messages && messages.map((message, index) => {
             return message.sender._id === user._id ? 
                 (<Box 

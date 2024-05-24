@@ -5,6 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CreateGCModel from '../ui components/CreateGCModel';
 import { Avatar } from '@mui/material';
 import FullscreenImageModal from '../ui components/FullScreenImageModel';
+import { getChatProfilePic } from '../chatLogics';
 
 function MyChats() {
   const { chats, user, setselectedChat, selectedChat } = useChatContext();
@@ -69,11 +70,11 @@ function MyChats() {
                   <Avatar
                     sx={{ marginRight: 2, cursor: 'pointer', ":hover":{width:'42px', height:'42px'} }}
                     alt={user.name}
-                    src={chat.isGroupChat ? chat.users[0].pic : (chat.users[0]._id === user._id ? chat.users[1].pic : chat.users[0].pic)}
+                    src={getChatProfilePic(chat, user)}
                     imgProps={{
                       loading: 'lazy',
                     }}
-                    onClick={() => handleAvatarClick(chat.isGroupChat ? chat.users[0].pic : (chat.users[0]._id === user._id ? chat.users[1].pic : chat.users[0].pic))}
+                    onClick={() => handleAvatarClick(getChatProfilePic(chat, user))}
                   />
 
                   <Box
