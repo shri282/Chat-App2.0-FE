@@ -139,8 +139,8 @@ function ChatBox() {
 
           <InnerBox>
             <Box
-            display={'flex'}
-            alignItems={'center'}
+              display={'flex'}
+              alignItems={'center'}
             >
               <Avatar
                 sx={{ marginRight: 2, cursor: 'pointer' }}
@@ -156,22 +156,16 @@ function ChatBox() {
             <ChatMenu />
           </InnerBox>
 
-          <Box 
-           overflow={'auto'} 
-           sx={{ backgroundImage:"url('/images/kristina-kashtanova-EwpUsHDmEwg-unsplash.jpg')", backgroundSize:'cover'}} flexGrow={2}
-           ref={messageRef}
-          >
-            <ScrollableMessages messages={messages} />
-          </Box>
+          <ScrollableMessages messageRef={messageRef} messages={messages} />
 
-          <EmojiPickerModel popupAnchorEl={popupAnchorEl} emojiPickerRef={emojiPickerRef} setPopupAnchorEl={setPopupAnchorEl} onEmojiClick={onEmojiClick} handleClose={popupHandleClick} />
-          <input type="file" ref={fileInputRef} style={{ display: 'none' }} />
           <Box 
             padding={1}
             display={'flex'}
             alignItems={'center'}
             justifyContent={'space-between'}
           >
+            <EmojiPickerModel popupAnchorEl={popupAnchorEl} emojiPickerRef={emojiPickerRef} setPopupAnchorEl={setPopupAnchorEl} onEmojiClick={onEmojiClick} handleClose={popupHandleClick} />
+            <input type="file" ref={fileInputRef} style={{ display: 'none' }} />
             <SentimentSatisfiedAltIcon ref={emojiPickerRef} onClick={popupHandleClick} sx={{ ":hover":{ cursor:'pointer', backgroundColor:'#f2eeed' }, padding:'3px', marginRight:'5px', borderRadius:'3px' }} />
             <AttachFileIcon onClick={handleFileInputClick} sx={{ ":hover":{ cursor:'pointer', backgroundColor:'#f2eeed' }, padding:'3px', marginRight:'5px', borderRadius:'3px' }} />
             <TextField 
