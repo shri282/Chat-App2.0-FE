@@ -14,7 +14,7 @@ function ScrollableMessages({ messages, messageRef }) {
      flexGrow={2}
      ref={messageRef}
      flexDirection={'column'}
-     justifyContent={'flex-end'}
+    //  justifyContent={'flex-end'}
      sx={{ 
       backgroundImage: 'url(/images/kristina-kashtanova-EwpUsHDmEwg-unsplash.jpg)', 
       backgroundSize: 'cover', 
