@@ -33,12 +33,13 @@ function MyChats() {
       overflow={'hidden'}
     >
       <Box
-        width={'95%'}
+        width={'97%'}
         display={'flex'}
         flexDirection={'row'}
         justifyContent={'space-between'}
+        border={'0.5px solid #E0DFDF'}
         alignItems={'center'}
-        margin={1} 
+        padding={1}
       >
         <Typography variant='h5' color={'orange'}>My Chats</Typography>
         <CreateGCModel user={user}>
@@ -46,9 +47,11 @@ function MyChats() {
         </CreateGCModel>
       </Box>
         <Stack
-          width={'100%'}
+          width={'95%'}
           height={'90%'}
           bgcolor={"#FFFCFC"}
+          gap={1}
+          padding={1}
           overflow={'hidden'}
           sx={{ overflowY:'auto' }}
         >
@@ -56,19 +59,18 @@ function MyChats() {
             chats && chats.map((chat) => {
               return (
                 <Box
-                width={'100%'}
+                width={'97%'}
                 key={chat._id}
                 display={'flex'}
                 flexDirection={'row'}
                 alignItems={'center'}
-                border={'0.5px solid #E0DFDF'}
-                boxShadow={"0px 1px 1px rgba(0, 0, 0, 0.1)"}
+                borderRadius={1}
                 padding={1}
                 sx={{ cursor:'pointer', ":hover":{ backgroundColor: '#eee', color:'black' }}}
                 bgcolor= { selectedChat ? (selectedChat._id === chat._id ? "#eee" : '#fff') : '#fff'}
                 >
                   <Avatar
-                    sx={{ marginRight: 2, cursor: 'pointer', ":hover":{width:'42px', height:'42px'} }}
+                    sx={{ marginRight: 2, cursor: 'pointer' }}
                     alt={user.name}
                     src={getChatProfilePic(chat, user)}
                     imgProps={{
