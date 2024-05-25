@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CreateGCModel from '../ui components/CreateGCModel';
 import { Avatar } from '@mui/material';
 import FullscreenImageModal from '../ui components/FullScreenImageModel';
-import { getChatProfilePic } from '../chatLogics';
+import { getChatProfilePic, getChatName, getRecentChatDate } from '../chatLogics';
 
 function MyChats() {
   const { chats, user, setselectedChat, selectedChat } = useChatContext();
@@ -18,6 +18,7 @@ function MyChats() {
 };
 
   const selectChatHandler = (chat) => {
+    console.log(chat);
     setselectedChat(chat);
   }
 
@@ -80,12 +81,21 @@ function MyChats() {
                   />
 
                   <Box
-                  display={'flex'}
-                  flexDirection={'column'}
-                  onClick={() => selectChatHandler(chat)} 
+                   display={'flex'}
+                   flexDirection={'column'}
+                   width={'100%'}
+                   onClick={() => selectChatHandler(chat)} 
                   >
-                    <Typography sx={{ textTransform: 'capitalize', fontFamily:'Roboto', fontSize:'17px'}} variant='h6'>{ chat.isGroupChat ? chat.chatName : (chat.users[0]._id === user._id ? chat.users[1].name : chat.users[0].name) }</Typography>
-                    <Typography>{ chat.createdAt }</Typography>
+                    <Box
+                      display={'flex'}
+                      flexDirection={'row'}
+                      justifyContent={'space-between'}
+                      alignItems={'center'}
+                    >
+                      <Typography sx={{ textTransform: 'capitalize', fontFamily:'Roboto', fontSize:'17px'}} variant='h6'>{ getChatName(chat, user)}</Typography>
+                      <Typography variant='caption' style={{ color: 'grey' }}>{ getRecentChatDate(chat.latestMessage.createdAt)}</Typography>
+                    </Box>
+                    <Typography sx={{ fontSize:'14px' }}>{ chat?.latestMessage?.content }</Typography>
                   </Box>
                 </Box>
               )

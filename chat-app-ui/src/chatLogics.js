@@ -6,5 +6,18 @@ export const getTime = (date) => {
 
 export const getChatProfilePic = (chat, user) => {
     return chat.isGroupChat ? '/images/group.jpg' : 
-        (chat.users[0]._id === user._id ? chat.users[1].pic : chat.users[0].pic)
+        (chat.users[0]._id === user._id ? chat.users[1].pic : chat.users[0].pic);
+}
+
+export const getChatName = (chat, user) => {
+    return chat.isGroupChat ? chat.chatName : 
+        (chat.users[0]._id === user._id ? chat.users[1].name : chat.users[0].name);
+}
+
+export const getRecentChatDate = (chatDate) => {
+    const dateNow = new Date();
+    const latestMessageDate = new Date(chatDate);
+    const diff = dateNow - latestMessageDate;
+    const diffDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+    return diffDays >= 1 ? latestMessageDate.toDateString() : getTime(latestMessageDate);   
 }
