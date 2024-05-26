@@ -37,7 +37,7 @@ function ChatBox() {
   
   const { selectedChat, accessToken } = useChatContext();
   const [openImageModel, setOpenImageModel] = useState(false);
-  const { user } = useChatContext();
+  const { user, setAllNotifications } = useChatContext();
   const [popupAnchorEl, setPopupAnchorEl] = useState(null);
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(0);
@@ -81,7 +81,6 @@ function ChatBox() {
 
   
   const sentMessageHandler = async(event) => {
-    console.log(event);
     if(event.key !== 'Enter' && event.type !== 'click') return;
     try {
       if(message.trim() === '' || !selectedChat) return;
@@ -98,12 +97,16 @@ function ChatBox() {
       }, config);
       setMessages([...messages, data]);
       messageRef.current.scrollTop = messageRef.current.scrollHeight;
-      console.log(data);
     } catch(error) {
       console.log(error);
     }
   }
   
+  useEffect(() => {
+    setAllNotifications((prevNotifications) => {
+      return prevNotifications.filter((notifi) => notifi.chatId !== selectedChat._id);
+    })
+  },[selectedChat,setAllNotifications]);
 
   useEffect(() => {
     fetchMessages();
@@ -113,12 +116,23 @@ function ChatBox() {
 
   useEffect(() => {
     const handleNewMessage = (message) => {
-      if (message.chat._id === selectedChat._id) {
+      if (selectedChat && message.chat._id === selectedChat._id) {
         setMessages((prevMessages) => {
           if (prevMessages.some((msg) => msg._id === message._id)) {
             return prevMessages;
           }
           return [...prevMessages, message];
+        });
+      } else {
+        setAllNotifications((prevNotifications) => {
+          const newNotifications = [...prevNotifications];
+          const chatIndex = newNotifications.findIndex((notification) => notification.chatId === message.chat._id);
+          if (chatIndex > -1) {
+            newNotifications[chatIndex].count += 1;
+          } else {
+            newNotifications.push({ chatId: message.chat._id, count: 1 });
+          }
+          return newNotifications;
         });
       }
     };
@@ -127,7 +141,7 @@ function ChatBox() {
     return () => {
       socket.off('newMessage', handleNewMessage);
     };
-  }, [selectedChat]);
+  }, [selectedChat,setAllNotifications]);
 
   
   return (

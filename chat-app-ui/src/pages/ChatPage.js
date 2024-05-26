@@ -32,7 +32,7 @@ function ChatPage() {
           }}
         >
           <SideDrawer />
-          <Typography variant='h5' color={'orange'} >ChatterBox</Typography>
+          <Typography variant='h5' color={'#e6938c'} >ChatterBox</Typography>
           <MenuContent />
         </Box>
       }

@@ -12,6 +12,7 @@ const ChatProvider = ({ children }) => {
   const [chats, setChats] = React.useState([]);
   const [users, setUsers] = React.useState([]);
   const [selectedChat, setselectedChat] = React.useState(null);
+  const [allNotifications, setAllNotifications] = React.useState([]);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -68,7 +69,20 @@ const ChatProvider = ({ children }) => {
   },[accessToken, fetchUsers]);
 
   return (
-    <chatContext.Provider value={{ user, setselectedChat, selectedChat, users, setUser, accessToken, setAccessToken, chats, setChats}}>
+    <chatContext.Provider value={
+      { 
+        user, 
+        setselectedChat, 
+        selectedChat, 
+        users, 
+        setUser, 
+        accessToken, 
+        setAccessToken, 
+        chats, 
+        setChats,
+        allNotifications,
+        setAllNotifications
+      }}>
       { children }
     </chatContext.Provider>
   )

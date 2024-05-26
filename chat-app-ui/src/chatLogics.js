@@ -21,3 +21,9 @@ export const getRecentChatDate = (chatDate) => {
     const diffDays = Math.floor(diff / (1000 * 60 * 60 * 24));
     return diffDays >= 1 ? latestMessageDate.toDateString() : getTime(latestMessageDate);   
 }
+
+export const getNotificationCount = (chatId, allNotifications) => {
+    console.log('in get notifications');
+    const notification = allNotifications.find((notification) => notification.chatId === chatId);
+    return notification ? notification.count : 0;
+}

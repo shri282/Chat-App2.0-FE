@@ -3,24 +3,10 @@ import { useChatContext } from '../context/ChatProvider'
 import { Box, Button, Stack, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CreateGCModel from '../ui components/CreateGCModel';
-import { Avatar } from '@mui/material';
-import FullscreenImageModal from '../ui components/FullScreenImageModel';
-import { getChatProfilePic, getChatName, getRecentChatDate } from '../chatLogics';
+import Chat from './Chat';
 
 function MyChats() {
-  const { chats, user, setselectedChat, selectedChat } = useChatContext();
-  const [imageModalOpen, setImageModalOpen] = React.useState(false);
-  const [selectedImage, setSelectedImage] = React.useState('');
-
-  const handleAvatarClick = (src) => {
-    setSelectedImage(src)
-    setImageModalOpen(true);
-};
-
-  const selectChatHandler = (chat) => {
-    console.log(chat);
-    setselectedChat(chat);
-  }
+  const { chats, user } = useChatContext();
 
   return (
     <Box
@@ -42,7 +28,7 @@ function MyChats() {
         alignItems={'center'}
         padding={1}
       >
-        <Typography variant='h5' color={'orange'}>My Chats</Typography>
+        <Typography variant='h5' color={'#e6938c'}>Chats</Typography>
         <CreateGCModel user={user}>
           <Button variant='outlined' startIcon={<AddIcon />}>ADD GROUP</Button>
         </CreateGCModel>
@@ -59,56 +45,11 @@ function MyChats() {
           {
             chats && chats.map((chat) => {
               return (
-                <Box
-                width={'97%'}
-                key={chat._id}
-                display={'flex'}
-                flexDirection={'row'}
-                alignItems={'center'}
-                borderRadius={1}
-                padding={1}
-                sx={{ cursor:'pointer', ":hover":{ backgroundColor: '#eee', color:'black' }}}
-                bgcolor= { selectedChat ? (selectedChat._id === chat._id ? "#eee" : '#fff') : '#fff'}
-                >
-                  <Avatar
-                    sx={{ marginRight: 2, cursor: 'pointer' }}
-                    alt={user.name}
-                    src={getChatProfilePic(chat, user)}
-                    imgProps={{
-                      loading: 'lazy',
-                    }}
-                    onClick={() => handleAvatarClick(getChatProfilePic(chat, user))}
-                  />
-
-                  <Box
-                   display={'flex'}
-                   flexDirection={'column'}
-                   width={'100%'}
-                   onClick={() => selectChatHandler(chat)} 
-                  >
-                    <Box
-                      display={'flex'}
-                      flexDirection={'row'}
-                      justifyContent={'space-between'}
-                      alignItems={'center'}
-                    >
-                      <Typography sx={{ textTransform: 'capitalize', fontFamily:'Roboto', fontSize:'17px'}} variant='h6'>{ getChatName(chat, user)}</Typography>
-                      <Typography variant='caption' style={{ color: 'grey' }}>{ getRecentChatDate(chat.latestMessage.createdAt)}</Typography>
-                    </Box>
-                    <Typography sx={{ fontSize:'14px' }}>{ chat?.latestMessage?.content }</Typography>
-                  </Box>
-                </Box>
+                <Chat key={chat._id} chatData={chat} />
               )
             })
           }
         </Stack>
-
-      <FullscreenImageModal
-        open={imageModalOpen} 
-        handleClose={() => setImageModalOpen(false)} 
-        imgSrc={selectedImage} 
-        alt="Chat Avatar"
-      />
     </Box>
   )
 }

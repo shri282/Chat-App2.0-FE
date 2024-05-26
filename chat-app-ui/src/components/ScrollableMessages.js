@@ -7,6 +7,12 @@ function ScrollableMessages({ messages, messageRef }) {
 
   const { user } = useChatContext();
 
+  React.useLayoutEffect(() => {
+    if (messageRef.current) {
+      messageRef.current.scrollTop = messageRef.current.scrollHeight;
+    }
+  }, [messages,messageRef]);
+
   return (
     <Box
      display={'flex'}
@@ -14,7 +20,6 @@ function ScrollableMessages({ messages, messageRef }) {
      flexGrow={2}
      ref={messageRef}
      flexDirection={'column'}
-    //  justifyContent={'flex-end'}
      sx={{ 
       backgroundImage: 'url(/images/kristina-kashtanova-EwpUsHDmEwg-unsplash.jpg)', 
       backgroundSize: 'cover', 

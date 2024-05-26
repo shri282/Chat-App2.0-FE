@@ -22,7 +22,6 @@ function ChatMenu() {
   const { user, selectedChat } = useChatContext();
   const [openProfile, setOpenProfile] = React.useState(false);
   const [openEditGroupModel, setopenEditGroupModel] = React.useState(false)
-  console.log(selectedChat.groupAdmin && selectedChat.groupAdmin._id);
 
   const handleProfileOpen = () => {
     handleClose();
