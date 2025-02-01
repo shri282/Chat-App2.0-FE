@@ -1,9 +1,9 @@
 import React from "react";
-import "../styles/signup.css";
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
-import axios from "../config/axios";
-import Toster from "../ui components/Toster";
+import axios from "../../config/axios";
+import Toster from "../../ui components/Toster";
+import "../../styles/signup.css";
 
 
 function SignUp() {

@@ -4,8 +4,8 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import Login from '../components/Login';
-import SignUp from '../components/SignUp';
+import Login from '../components/Auth/Login';
+import SignUp from '../components/Auth/SignUp';
 import { Container } from '@mui/material';
 
 function AuthPage() {
@@ -17,7 +17,7 @@ function AuthPage() {
     };
   
     return (
-        <Container sx={{ width: '100%', typography: 'body1', marginTop:'5%', marginLeft:'28%', marginBottom:'20px'}}>
+        <Container sx={{ width: '100%', typography: 'body1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
             <Box sx={{ width: '44%', backgroundColor: 'white', marginBottom:'10px', padding: '8px', fontSize:'20px' , display: 'flex', justifyContent: 'center', fontWeight:800, color:'grey' }}>
             CHAT-APP
             </Box>
