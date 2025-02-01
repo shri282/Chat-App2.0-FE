@@ -1,8 +1,8 @@
 import React from 'react'
 import { Box, Typography, Avatar } from '@mui/material';
-import { getChatName, getRecentChatDate, getChatProfilePic, getNotificationCount } from '../chatLogics';
-import { useChatContext } from '../context/ChatProvider';
-import FullscreenImageModal from '../ui components/FullScreenImageModel';
+import { getChatName, getRecentChatDate, getChatProfilePic, getNotificationCount } from '../../chatLogics';
+import { useChatContext } from '../../context/ChatProvider';
+import FullscreenImageModal from '../../ui components/FullScreenImageModel';
 
 function Chat({ chatData }) {
 

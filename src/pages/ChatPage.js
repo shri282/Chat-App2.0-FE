@@ -3,8 +3,8 @@ import { useChatContext } from '../context/ChatProvider'
 import { Box, Typography } from '@mui/material';
 import SideDrawer from '../components/SideDrawer';
 import MenuContent from '../ui components/MenuContent';
-import MyChats from '../components/MyChats';
-import ChatBox from '../components/ChatBox';
+import MyChats from '../components/Chat/MyChats';
+import ChatBox from '../components/ChatBox/ChatBox';
 
 function ChatPage() {
   const { user } = useChatContext();

@@ -1,8 +1,8 @@
 import React from 'react'
-import { useChatContext } from '../context/ChatProvider'
+import { useChatContext } from '../../context/ChatProvider'
 import { Box, Button, Stack, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import CreateGCModel from '../ui components/CreateGCModel';
+import CreateGCModel from '../../ui components/CreateGCModel';
 import Chat from './Chat';
 
 function MyChats() {
