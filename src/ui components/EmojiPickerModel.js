@@ -12,7 +12,6 @@ const EmojiPickerModel = ({ popupAnchorEl, emojiPickerRef, onEmojiClick, setPopu
   React.useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target) && !emojiPickerRef.current.contains(event.target)) {
-        console.log('outside click');
         setPopupAnchorEl(null);
       }
     };

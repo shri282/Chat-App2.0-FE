@@ -37,7 +37,6 @@ const ChatProvider = ({ children }) => {
       }
       const fetchChats = await axios.get("/api/chats/fetchChats", config);
       setChats(fetchChats.data);
-      console.log("fetchchats", fetchChats.data);
     } catch (error) {
       console.log(error);
     }
