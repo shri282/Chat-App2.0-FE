@@ -44,7 +44,6 @@ function SideDrawer() {
   }
 
   const handleFunction = async(userId) => {
-    console.log('User clicked');
     setLoading(true);
     try {
       const config = {

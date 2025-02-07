@@ -7,6 +7,7 @@ import socket from '../../socket/socket';
 import NoChatSelected from '../NoChatSelected';
 import ChatBoxHeader from './ChatBoxHeader';
 import ChatBoxActions from './ChatBoxActions';
+import { readBy, newMessage } from '../../socket/socketListeners';
 
 const OuterBox = styled('Box')`
   width: 60%;
@@ -21,10 +22,33 @@ const OuterBox = styled('Box')`
 
 function ChatBox() {
   
-  const { selectedChat, accessToken, setAllNotifications } = useChatContext();
+  const { selectedChat, accessToken, setAllNotifications, user } = useChatContext();
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const messageRef = useRef(null);
+
+
+  const sentMessageHandler = async(event) => {
+    if(event.key !== 'Enter' && event.type !== 'click') return;
+    try {
+      if(message.trim() === '' || !selectedChat) return;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+      setMessage('');
+      const { data } = await axios.post('/api/messages/sentMessage', {
+        chatId: selectedChat._id,
+        message,
+      }, config);
+      setMessages((prevMessages) => [...prevMessages, data]);
+      messageRef.current.scrollTop = messageRef.current.scrollHeight;
+    } catch(error) {
+      console.log(error);
+    }
+  }
 
   const fetchMessages = useCallback(async() => {
     if(!selectedChat) return;
@@ -41,68 +65,59 @@ function ChatBox() {
     }
   }, [selectedChat, accessToken]);
 
-  const sentMessageHandler = async(event) => {
-      if(event.key !== 'Enter' && event.type !== 'click') return;
-      try {
-        if(message.trim() === '' || !selectedChat) return;
-        const config = {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
-          }
-        }
-        setMessage('');
-        const { data } = await axios.post('/api/messages/sentMessage', {
-          chatId: selectedChat._id,
-          message,
-        }, config);
-        setMessages([...messages, data]);
-        messageRef.current.scrollTop = messageRef.current.scrollHeight;
-      } catch(error) {
-        console.log(error);
-      }
-  }
-  
-  useEffect(() => {
-    setAllNotifications((prevNotifications) => {
-      return prevNotifications.filter((notifi) => notifi.chatId !== selectedChat._id);
-    })
-  },[selectedChat, setAllNotifications]);
-
   useEffect(() => {
     fetchMessages();
     selectedChat && socket.emit('joinChat', selectedChat._id);
   }, [selectedChat, fetchMessages]);
+  
+  const updateReadBy = useCallback(async () => {
+    if(!selectedChat) return;
+    
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      }
+    }
+    await axios.post(`/api/messages/${selectedChat._id}/readBy`, [], config);
+  }, [selectedChat, accessToken]);
 
   useEffect(() => {
-    const handleNewMessage = (message) => {
-      if (selectedChat && message.chat._id === selectedChat._id) {
-        setMessages((prevMessages) => {
-          if (prevMessages.some((msg) => msg._id === message._id)) {
-            return prevMessages;
-          }
-          return [...prevMessages, message];
-        });
-      } else {
-        setAllNotifications((prevNotifications) => {
-          const newNotifications = [...prevNotifications];
-          const chatIndex = newNotifications.findIndex((notification) => notification.chatId === message.chat._id);
-          if (chatIndex > -1) {
-            newNotifications[chatIndex].count += 1;
-          } else {
-            newNotifications.push({ chatId: message.chat._id, count: 1 });
-          }
-          return newNotifications;
-        });
-      }
-    };
-    socket.on('newMessage', handleNewMessage);
-    
-    return () => {
-      socket.off('newMessage', handleNewMessage);
-    };
+    updateReadBy();
+  }, [updateReadBy]);
+
+  useEffect(() => {
+    setAllNotifications((prevNotifications) => {
+      return prevNotifications.filter((notifi) => notifi.chatId !== selectedChat._id);
+    })
   }, [selectedChat, setAllNotifications]);
 
+  useEffect(() => {
+    if (messageRef.current) {
+      const isAtBottom = messageRef.current.scrollHeight - messageRef.current.scrollTop === messageRef.current.clientHeight;
+      if (isAtBottom) {
+        messageRef.current.scrollTop = messageRef.current.scrollHeight;
+      }
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    const newMessageHandler = newMessage.bind(null, {selectedChat, setAllNotifications, user, setMessages});
+    socket.on('newMessage', newMessageHandler);
+    
+    return () => {
+      socket.off('newMessage', newMessageHandler);
+    };
+  }, [selectedChat, user, setAllNotifications]);
+
+  useEffect(() => {
+    const readByHandler = readBy.bind(null, { selectedChat, user, setMessages })
+    socket.on('readBy', readByHandler);
+
+    return () => {
+      socket.off('readBy', readByHandler);
+    };
+  }, [selectedChat, user]);
   
   return (
     <>
