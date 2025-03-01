@@ -8,12 +8,12 @@ function Chat({ chatData }) {
 
   const [imageModalOpen, setImageModalOpen] = React.useState(false);
   const [notifications, setNotifications] = React.useState(0); 
-  const { user, setselectedChat, selectedChat, allNotifications } = useChatContext();
+  const { allNotifications, user, setselectedChat, selectedChat } = useChatContext();
 
   React.useEffect(() => {
     const count = getNotificationCount(chatData._id, allNotifications);
     setNotifications(count);
-  },[allNotifications,chatData]);
+  },[allNotifications, chatData]);
 
   return (
     <>

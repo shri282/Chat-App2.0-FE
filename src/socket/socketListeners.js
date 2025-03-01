@@ -22,17 +22,18 @@ export const newMessage = ({selectedChat, setAllNotifications, user, setMessages
       }
       return [...prevMessages, message];
     });
-  } else {
+  } else {    
     setAllNotifications((prevNotifications) => {
-      const newNotifications = [...prevNotifications];
-      const chatIndex = newNotifications.findIndex((notification) => notification.chatId === message.chat._id);
-      if (chatIndex > -1) {
-        newNotifications[chatIndex].count += 1;
+      if (prevNotifications.has(message.chat._id)) {
+        prevNotifications.set(message.chat._id, prevNotifications.get(message.chat._id) + 1);
       } else {
-        newNotifications.push({ chatId: message.chat._id, count: 1 });
+        prevNotifications.set(message.chat._id, 1);
       }
-      return newNotifications;
+
+      return new Map(prevNotifications);
     });
   }
-  
+
+
+   
 };

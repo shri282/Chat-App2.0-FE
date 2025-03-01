@@ -1,12 +1,34 @@
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useChatContext } from '../../context/ChatProvider'
 import { Box, Button, Stack, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CreateGCModel from '../../ui components/CreateGCModel';
 import Chat from './Chat';
+import socket from '../../socket/socket';
+import { newMessage } from '../../socket/socketListeners';
 
 function MyChats() {
-  const { chats, user } = useChatContext();
+  const { chats, user, setMessages, setAllNotifications, selectedChat } = useChatContext();
+
+
+  const joinChatsToRoom = useCallback(() => {
+    chats.forEach((chat) => {
+      socket.emit('joinChat', chat._id);
+    })
+  }, [chats]);
+
+  useEffect(() => {
+    joinChatsToRoom();
+  }, [joinChatsToRoom]);
+
+  useEffect(() => {
+    const newMessageHandler = newMessage.bind(null, {selectedChat, setAllNotifications, user, setMessages});
+    socket.on('newMessage', newMessageHandler);
+    
+    return () => {
+      socket.off('newMessage', newMessageHandler);
+    };
+  }, [selectedChat, user, setAllNotifications, setMessages]);
 
   return (
     <Box
