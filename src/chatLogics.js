@@ -23,6 +23,6 @@ export const getRecentChatDate = (chatDate) => {
 }
 
 export const getNotificationCount = (chatId, allNotifications) => {
-    const notification = allNotifications.find((notification) => notification.chatId === chatId);
-    return notification ? notification.count : 0;
+    const count = allNotifications.get(chatId);
+    return count ? count : 0;
 }

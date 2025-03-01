@@ -7,7 +7,7 @@ import socket from '../../socket/socket';
 import NoChatSelected from '../NoChatSelected';
 import ChatBoxHeader from './ChatBoxHeader';
 import ChatBoxActions from './ChatBoxActions';
-import { readBy, newMessage } from '../../socket/socketListeners';
+import { readBy } from '../../socket/socketListeners';
 
 const OuterBox = styled('Box')`
   width: 60%;
@@ -22,9 +22,8 @@ const OuterBox = styled('Box')`
 
 function ChatBox() {
   
-  const { selectedChat, accessToken, setAllNotifications, user } = useChatContext();
+  const { selectedChat, accessToken, setAllNotifications, user, messages, setMessages } = useChatContext();
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
   const messageRef = useRef(null);
 
 
@@ -63,12 +62,11 @@ function ChatBox() {
     } catch(error) {
       console.log(error);
     }
-  }, [selectedChat, accessToken]);
+  }, [selectedChat, accessToken, setMessages]);
 
   useEffect(() => {
     fetchMessages();
-    selectedChat && socket.emit('joinChat', selectedChat._id);
-  }, [selectedChat, fetchMessages]);
+  }, [fetchMessages]);
   
   const updateReadBy = useCallback(async () => {
     if(!selectedChat) return;
@@ -87,8 +85,11 @@ function ChatBox() {
   }, [updateReadBy]);
 
   useEffect(() => {
+    if (!selectedChat) return;
+
     setAllNotifications((prevNotifications) => {
-      return prevNotifications.filter((notifi) => notifi.chatId !== selectedChat._id);
+      prevNotifications.delete(selectedChat._id);
+      return new Map(prevNotifications);
     })
   }, [selectedChat, setAllNotifications]);
 
@@ -102,22 +103,15 @@ function ChatBox() {
   }, [messages]);
 
   useEffect(() => {
-    const newMessageHandler = newMessage.bind(null, {selectedChat, setAllNotifications, user, setMessages});
-    socket.on('newMessage', newMessageHandler);
+    if (!selectedChat) return;
     
-    return () => {
-      socket.off('newMessage', newMessageHandler);
-    };
-  }, [selectedChat, user, setAllNotifications]);
-
-  useEffect(() => {
     const readByHandler = readBy.bind(null, { selectedChat, user, setMessages })
     socket.on('readBy', readByHandler);
 
     return () => {
       socket.off('readBy', readByHandler);
     };
-  }, [selectedChat, user]);
+  }, [selectedChat, user, setMessages]);
   
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useCallback } from 'react'
+import React, { useEffect, useContext, useCallback, useState } from 'react'
 import { createContext } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from '../config/axios'
@@ -12,7 +12,8 @@ const ChatProvider = ({ children }) => {
   const [chats, setChats] = React.useState([]);
   const [users, setUsers] = React.useState([]);
   const [selectedChat, setselectedChat] = React.useState(null);
-  const [allNotifications, setAllNotifications] = React.useState([]);
+  const [messages, setMessages] = useState([]);
+  const [allNotifications, setAllNotifications] = React.useState(new Map());
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -80,7 +81,9 @@ const ChatProvider = ({ children }) => {
         chats, 
         setChats,
         allNotifications,
-        setAllNotifications
+        setAllNotifications,
+        messages,
+        setMessages
       }}>
       { children }
     </chatContext.Provider>
