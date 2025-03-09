@@ -47,7 +47,6 @@ function SignUp() {
 
     axios.post("/api/users/register", formData, config)
       .then((response) => {
-        console.log(response.data);
         localStorage.setItem("user", JSON.stringify(response.data.user));
         localStorage.setItem("accessToken", response.data.token);
         setToster({
