@@ -1,39 +1,36 @@
-export const readBy = ({ selectedChat, user, setMessages }, readByEvent) => {
-    const { userId, chatId } = readByEvent;
-    if (userId === user._id || selectedChat._id !== chatId) return;
+export const readBy = ({ selectedChat, user, setMessages }, { userId, chatId }) => {
+  if (userId === user._id || selectedChat._id !== chatId) return;
 
-    setMessages((prevMessages) => {
-      return prevMessages.map((element) => {
-        if (element.readBy.length === 0) {
-          return { ...element, readBy: [userId] };
-        }
-        return element;
-      });
-    })
-}
+  setMessages((prevMessages) =>
+    prevMessages.map((message) =>
+      message.readBy.length === 0 ? { ...message, readBy: [userId] } : message
+    )
+  );
+};
 
-export const newMessage = ({selectedChat, setAllNotifications, user, setMessages}, message) => {
+export const newMessage = ({ setChats, selectedChat, setAllNotifications, user, setMessages }, message) => {
   if (message.sender._id === user._id) return;
 
-  if (selectedChat && message.chat._id === selectedChat._id) {
-    setMessages((prevMessages) => {
-      if (prevMessages.some((msg) => msg._id === message._id)) {
-        return prevMessages;
-      }
-      return [...prevMessages, message];
-    });
-  } else {    
-    setAllNotifications((prevNotifications) => {
-      if (prevNotifications.has(message.chat._id)) {
-        prevNotifications.set(message.chat._id, prevNotifications.get(message.chat._id) + 1);
-      } else {
-        prevNotifications.set(message.chat._id, 1);
-      }
-
-      return new Map(prevNotifications);
-    });
+  if (selectedChat?._id === message.chat._id) {
+    setMessages((prevMessages) =>
+      prevMessages.some((msg) => msg._id === message._id) ? prevMessages : [...prevMessages, message]
+    );
+    selectedChat.latestMessage = message;
+  } else {
+    updateChatsAndNotifications(message, setChats, setAllNotifications);
   }
+};
 
+const updateChatsAndNotifications = (message, setChats, setAllNotifications) => {
+  setAllNotifications((prevNotifications) => {
+    const updatedNotifications = new Map(prevNotifications);
+    updatedNotifications.set(message.chat._id, (updatedNotifications.get(message.chat._id) || 0) + 1);
+    return updatedNotifications;
+  });
 
-   
+  setChats((prevChats) =>
+    prevChats.map((chat) =>
+      chat._id === message.chat._id ? { ...chat, latestMessage: message } : chat
+    )
+  );
 };

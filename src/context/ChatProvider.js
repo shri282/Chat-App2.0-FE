@@ -39,7 +39,7 @@ const ChatProvider = ({ children }) => {
       const fetchChats = await axios.get("/api/chats/fetchChats", config);
       setChats(fetchChats.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   },[accessToken]);
 
@@ -54,7 +54,7 @@ const ChatProvider = ({ children }) => {
       const { data } = await axios.get("/api/users/fetchUsers", config);
       setUsers(data);   
     } catch(error) {
-      console.log(error);
+      console.error(error);
     }
   },[accessToken]);
 

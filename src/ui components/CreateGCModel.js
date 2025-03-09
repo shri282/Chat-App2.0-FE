@@ -96,7 +96,7 @@ function CreateGCModel({ children, user }) {
         return [...prevChats, data];
       })
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setToster({
         open: true,
         severity: "error",

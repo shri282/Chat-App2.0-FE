@@ -8,8 +8,7 @@ import socket from '../../socket/socket';
 import { newMessage } from '../../socket/socketListeners';
 
 function MyChats() {
-  const { chats, user, setMessages, setAllNotifications, selectedChat } = useChatContext();
-
+  const { chats, user, setMessages, setAllNotifications, selectedChat, setChats } = useChatContext();
 
   const joinChatsToRoom = useCallback(() => {
     chats.forEach((chat) => {
@@ -21,14 +20,17 @@ function MyChats() {
     joinChatsToRoom();
   }, [joinChatsToRoom]);
 
+  const newMessageHandler = useCallback((message) => {
+    newMessage({ setChats, selectedChat, setAllNotifications, user, setMessages }, message);
+  }, [setChats, selectedChat, setAllNotifications, user, setMessages]);
+
   useEffect(() => {
-    const newMessageHandler = newMessage.bind(null, {selectedChat, setAllNotifications, user, setMessages});
     socket.on('newMessage', newMessageHandler);
     
     return () => {
       socket.off('newMessage', newMessageHandler);
     };
-  }, [selectedChat, user, setAllNotifications, setMessages]);
+  }, [newMessageHandler]);
 
   return (
     <Box

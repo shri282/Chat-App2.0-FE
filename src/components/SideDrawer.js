@@ -66,7 +66,7 @@ function SideDrawer() {
         });
       };
     } catch(error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -110,7 +110,7 @@ function SideDrawer() {
         message: "Users fetched successfully",
       });   
     } catch(error) {
-      console.log(error);
+      console.error(error);
       setUsers((prevUsers) => {
         return {
           ...prevUsers,

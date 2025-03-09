@@ -8,6 +8,7 @@ import NoChatSelected from '../NoChatSelected';
 import ChatBoxHeader from './ChatBoxHeader';
 import ChatBoxActions from './ChatBoxActions';
 import { readBy } from '../../socket/socketListeners';
+import { getAuthConfig } from '../../chatLogics';
 
 const OuterBox = styled('Box')`
   width: 60%;
@@ -27,69 +28,68 @@ function ChatBox() {
   const messageRef = useRef(null);
 
 
-  const sentMessageHandler = async(event) => {
+  const sentMessageHandler = useCallback(async(event) => {
     if(event.key !== 'Enter' && event.type !== 'click') return;
+    if (!message.trim() || !selectedChat) return;
+
     try {
-      if(message.trim() === '' || !selectedChat) return;
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
-        }
-      }
       setMessage('');
-      const { data } = await axios.post('/api/messages/sentMessage', {
-        chatId: selectedChat._id,
-        message,
-      }, config);
+      const { data } = await axios.post(
+        '/api/messages/sentMessage',
+        { chatId: selectedChat._id, message },
+        getAuthConfig(accessToken)
+      );
+
       setMessages((prevMessages) => [...prevMessages, data]);
-      messageRef.current.scrollTop = messageRef.current.scrollHeight;
+      selectedChat.latestMessage = data;
+
+      if (messageRef.current) {
+        messageRef.current.scrollTop = messageRef.current.scrollHeight;
+      }
     } catch(error) {
-      console.log(error);
+      console.error(error);
     }
-  }
+  }, [message, selectedChat, accessToken, setMessages]);
 
   const fetchMessages = useCallback(async() => {
     if(!selectedChat) return;
+
     try {
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      }
-      const { data } = await axios.get(`/api/messages/${selectedChat._id}`, config);
+      const { data } = await axios.get(`/api/messages/${selectedChat._id}`, getAuthConfig(accessToken));
       setMessages(data);
     } catch(error) {
-      console.log(error);
+      console.error(error);
     }
   }, [selectedChat, accessToken, setMessages]);
 
   useEffect(() => {
     fetchMessages();
   }, [fetchMessages]);
-  
+
+
   const updateReadBy = useCallback(async () => {
-    if(!selectedChat) return;
-    
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-      }
+    if (!selectedChat) return;
+    try {
+      await axios.post(`/api/messages/${selectedChat._id}/readBy`, [], getAuthConfig(accessToken));
+    } catch (error) {
+      console.error('Error updating read status:', error);
     }
-    await axios.post(`/api/messages/${selectedChat._id}/readBy`, [], config);
   }, [selectedChat, accessToken]);
 
   useEffect(() => {
     updateReadBy();
   }, [updateReadBy]);
 
+
   useEffect(() => {
     if (!selectedChat) return;
 
-    setAllNotifications((prevNotifications) => {
-      prevNotifications.delete(selectedChat._id);
-      return new Map(prevNotifications);
+    setAllNotifications((prev) => {
+      if (!prev.has(selectedChat._id)) return prev;
+        
+      const updatedNotifications = new Map(prev);
+      updatedNotifications.delete(selectedChat._id);
+      return updatedNotifications;
     })
   }, [selectedChat, setAllNotifications]);
 
@@ -105,12 +105,10 @@ function ChatBox() {
   useEffect(() => {
     if (!selectedChat) return;
     
-    const readByHandler = readBy.bind(null, { selectedChat, user, setMessages })
+    const readByHandler = (event) => readBy({ selectedChat, user, setMessages }, event);
     socket.on('readBy', readByHandler);
 
-    return () => {
-      socket.off('readBy', readByHandler);
-    };
+    return () => socket.off('readBy', readByHandler);
   }, [selectedChat, user, setMessages]);
   
   return (

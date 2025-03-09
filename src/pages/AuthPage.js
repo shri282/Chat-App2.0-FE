@@ -17,11 +17,11 @@ function AuthPage() {
     };
   
     return (
-        <Container sx={{ width: '100%', typography: 'body1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
-            <Box sx={{ width: '44%', backgroundColor: 'white', marginBottom:'10px', padding: '8px', fontSize:'20px' , display: 'flex', justifyContent: 'center', fontWeight:800, color:'grey' }}>
+        <Container sx={{ width: '40%', typography: 'body1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
+            <Box sx={{ width: '100%', backgroundColor: 'white', boxSizing: 'border-box', marginBottom:'10px', padding: '10px', fontSize:'20px' , display: 'flex', justifyContent: 'center', fontWeight:800, color:'grey' }}>
             CHAT-APP
             </Box>
-            <Box sx={{ width: '45%', typography: 'body1', backgroundColor: 'white'}}>
+            <Box sx={{ width: '100%', typography: 'body1', backgroundColor: 'white'}}>
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'center'}}>
                         <TabList sx={{width:'100%', display:'flex', flexDirection:'row'}} onChange={handleChange} aria-label="lab API tabs example">
