@@ -91,7 +91,7 @@ function SideDrawer() {
       });
       const config = {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          'Authorization': `Bearer ${sessionStorage.getItem('accessToken')}`
         }  
       }
       // API call to get users
