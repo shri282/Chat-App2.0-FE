@@ -27,8 +27,8 @@ function MenuContent() {
 
   const logoutHandler = () => {
     handleClose();
-    localStorage.removeItem('user');
-    localStorage.removeItem('accessToken');
+    sessionStorage.removeItem('user');
+    sessionStorage.removeItem('accessToken');
     window.location.reload();
   }
 

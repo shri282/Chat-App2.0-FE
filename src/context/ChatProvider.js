@@ -18,8 +18,8 @@ const ChatProvider = ({ children }) => {
   const location = useLocation();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const accessToken = localStorage.getItem("accessToken");
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    const accessToken = sessionStorage.getItem("accessToken");
     if(user && accessToken) {
       setUser(user);
       setAccessToken(accessToken);

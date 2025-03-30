@@ -47,8 +47,8 @@ function SignUp() {
 
     axios.post("/api/users/register", formData, config)
       .then((response) => {
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        localStorage.setItem("accessToken", response.data.token);
+        sessionStorage.setItem("user", JSON.stringify(response.data.user));
+        sessionStorage.setItem("accessToken", response.data.token);
         setToster({
           open: true,
           severity: "success",

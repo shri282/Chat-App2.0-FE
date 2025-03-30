@@ -40,8 +40,8 @@ function Login() {
       params: { email, password },
      })
     .then((response) => {
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      localStorage.setItem("accessToken", response.data.token);
+      sessionStorage.setItem("user", JSON.stringify(response.data.user));
+      sessionStorage.setItem("accessToken", response.data.token);
       setToster({
         open: true,
         severity: "success",
