@@ -31,10 +31,11 @@ const Label = styled('label')`
   flex-grow: 1;
 `;
 
-function UpdateGCModel({ children, user, selectedGroupChat, setopenEditGroupModel, openEditGroupModel }) {
+function UpdateGCModel({setopenEditGroupModel, openEditGroupModel }) {
+  const { users, accessToken, setChats, selectedChat, setselectedChat } = useChatContext();
   const [groupChatData, setgroupChatData] = React.useState({
-    chatName : selectedGroupChat.chatName,
-    groupMembers : selectedGroupChat.users
+    chatName : selectedChat.chatName,
+    groupMembers : selectedChat.users
   });
 
   const [toster, setToster] = React.useState({
@@ -42,7 +43,6 @@ function UpdateGCModel({ children, user, selectedGroupChat, setopenEditGroupMode
     severity: "success",
     message: "",
   });
-  const { users, accessToken, setChats } = useChatContext();
 
   const handleClose = () => {
     setopenEditGroupModel(false);
@@ -74,7 +74,7 @@ function UpdateGCModel({ children, user, selectedGroupChat, setopenEditGroupMode
         }
         const groupMembers = groupChatData.groupMembers.map((member) => member._id);
         const { data } = await axios.post('/api/chats/updateGroupChat', {
-          groupId : selectedGroupChat._id,
+          groupId : selectedChat._id,
           groupName : groupChatData.chatName,
           groupMembers : groupMembers
         },config);
@@ -85,8 +85,9 @@ function UpdateGCModel({ children, user, selectedGroupChat, setopenEditGroupMode
             message: "Group Chat updated successfully",
         });
         setChats((prevChats) => {
-          return [...prevChats.filter((chat) => chat._id !== selectedGroupChat._id), data]
+          return [...prevChats.filter((chat) => chat._id !== selectedChat._id), data]
         });
+        setselectedChat(data);
       } catch (error) {
         console.error(error);
         setToster({
@@ -117,7 +118,7 @@ function UpdateGCModel({ children, user, selectedGroupChat, setopenEditGroupMode
            height={'50%'}
           >
             <Label>Group Name</Label>
-            <TextField defaultValue={selectedGroupChat.chatName} sx={{ width:'100%', flexGrow:2}} size='small' onChange={chatNameHandler} id="outlined-basic" label="Chat Name" variant="outlined" />
+            <TextField defaultValue={selectedChat.chatName} sx={{ width:'100%', flexGrow:2}} size='small' onChange={chatNameHandler} id="outlined-basic" label="Chat Name" variant="outlined" />
           </Box>
 
           <Box
@@ -126,7 +127,7 @@ function UpdateGCModel({ children, user, selectedGroupChat, setopenEditGroupMode
            width={'100%'}
            height={'45%'}
           >
-            <MultiSelect setMembers={setgroupChatData} users={users} defaultUsers={selectedGroupChat.users} />
+            <MultiSelect setMembers={setgroupChatData} users={users} defaultUsers={selectedChat.users} />
           </Box>
 
           <Button onClick={submitHandler} variant='contained' sx={{ marginTop: '10px' }}>Update</Button>
