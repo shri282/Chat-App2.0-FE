@@ -140,7 +140,7 @@ function ChatMenu() {
           <ProfileModel setOpenProfile={setOpenProfile} openProfile={openProfile} user={selectedChat.users[0]._id === user._id ? selectedChat.users[1] : selectedChat.users[0]} />
         }
         {
-          selectedChat && <UpdateGCModel selectedGroupChat={selectedChat} openEditGroupModel={openEditGroupModel} setopenEditGroupModel={setopenEditGroupModel} user={user} />
+          selectedChat && <UpdateGCModel openEditGroupModel={openEditGroupModel} setopenEditGroupModel={setopenEditGroupModel} />
         }
       </Box>
     </React.Fragment>
