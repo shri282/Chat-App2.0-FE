@@ -7,10 +7,12 @@ import TabPanel from '@mui/lab/TabPanel';
 import Login from '../components/Auth/Login';
 import SignUp from '../components/Auth/SignUp';
 import { Container } from '@mui/material';
+import LoadingOverlay from '../ui components/LoadingOverlay';
 
 function AuthPage() {
 
     const [value, setValue] = React.useState('1');
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const handleChange = (event, newValue) => {
       setValue(newValue);
@@ -29,10 +31,11 @@ function AuthPage() {
                             <Tab sx={{width:'50%', '&.Mui-selected': { background: 'lightblue' }}} label="SignUp" value="2" />
                         </TabList>
                     </Box>
-                    <TabPanel value="1"><Login></Login></TabPanel>
-                    <TabPanel value="2"><SignUp></SignUp></TabPanel>
+                    <TabPanel value="1"><Login setIsLoading={setIsLoading}></Login></TabPanel>
+                    <TabPanel value="2"><SignUp setIsLoading={setIsLoading}></SignUp></TabPanel>
                 </TabContext>
             </Box>
+            <LoadingOverlay loading={isLoading} />
         </Container>
     );
     
