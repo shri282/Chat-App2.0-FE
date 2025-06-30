@@ -1,57 +1,70 @@
-import React from 'react'
-import { useChatContext } from '../context/ChatProvider'
-import { Box, Typography } from '@mui/material';
-import SideDrawer from '../components/SideDrawer';
-import MenuContent from '../ui components/MenuContent';
+import React from 'react';
+import { Avatar, Box, Button, IconButton, Tooltip } from '@mui/material';
 import MyChats from '../components/Chat/MyChats';
 import ChatBox from '../components/ChatBox/ChatBox';
+import SideDrawer from '../ui components/SideDrawer';
+import ChatIcon from '@mui/icons-material/Chat';
+import SettingsIcon from '@mui/icons-material/Settings';
+import MenuContent from "../ui components/MenuContent";
+import { useChatContext } from '../context/ChatProvider';
+import { useNavigate } from 'react-router-dom';
 
 function ChatPage() {
   const { user } = useChatContext();
+  const navigate = useNavigate();
+
+  const logoutHandler = () => {
+    sessionStorage.removeItem('user');
+    sessionStorage.removeItem('accessToken');
+    window.location.reload();
+  }
+
+  const navs = [
+    {
+      id: 1,
+      name: 'orders',
+      component: {
+        left: <MyChats />,
+        right: <ChatBox />
+      },
+      icon: <ChatIcon />,
+      default: true
+    },
+    {
+      id: 2,
+      name: 'settings',
+      component: {
+        left: <Box sx={{ width: '50%', height: '100vh', backgroundColor: 'white' }}>left settings</Box>,
+        right: <Box sx={{ width: '50%', height: '100vh', backgroundColor: 'white' }}>right settings</Box>
+      },
+      icon: <SettingsIcon />,
+      default: false
+    },
+    {
+      id: 3,
+      name: 'profile',
+      component: {
+        left: <Box sx={{ width: '50%', height: '100vh', backgroundColor: 'white' }}>
+          <Button onClick={logoutHandler}>Logout</Button>
+        </Box>,
+        right: <Box sx={{ width: '50%', height: '100vh', backgroundColor: 'white' }}>right profile</Box>
+      },
+      icon: <Tooltip title="profile">
+              <IconButton
+                sx={{ width: 24, height: 24 }}
+              >
+                <Avatar src={user?.pic || ""} sx={{ width: 24, height: 24, borderRadius: '50%' }}></Avatar>
+              </IconButton>
+            </Tooltip>,
+      default: false
+    },
+  ];
 
   return (
-    <Box 
-      width={'100%'} 
-      height={'100vh'} 
-      display={'flex'} 
-      flexDirection={'column'}
-      overflow={'hidden'}
-    >
-      { 
-        user && 
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            width : '100%',
-            alignItems: 'center',
-            backgroundColor: 'white',
-            padding: '5px 10px 5px 10px', 
-            border: '1px solid #E0DFDF',
-            flexGrow: 1
-          }}
-        >
-          <SideDrawer />
-          <Typography variant='h5' color={'#e6938c'} >ChatterBox</Typography>
-          <MenuContent />
-        </Box>
-      }
-      <Box
-        display={'flex'}
-        width={'100%'}
-        height={'100%'}
-        flexGrow={2}
-        marginTop={2}
-        marginBottom={2}
-        flexDirection={'row'}
-        justifyContent={'space-between'}
-        overflow={'hidden'}
-      >
-        { user && <MyChats /> }
-        { user && <ChatBox />}
-      </Box>
-    </Box>
-  )
+    <>
+      <SideDrawer navs={navs} />
+    </>
+  );
 }
 
-export default ChatPage
+export default ChatPage;

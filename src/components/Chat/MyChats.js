@@ -52,7 +52,7 @@ function MyChats() {
         alignItems={'center'}
         padding={1}
       >
-        <Typography variant='h5' color={'#e6938c'}>Chats</Typography>
+        <Typography variant='h5' color={'green'}>ChatterBox</Typography>
         <CreateGCModel user={user}>
           <Button variant='outlined' startIcon={<AddIcon />}>ADD GROUP</Button>
         </CreateGCModel>
