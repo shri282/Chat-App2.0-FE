@@ -6,7 +6,7 @@ import axios from "../../config/axios";
 import Toster from "../../ui components/Toster";
 import "../../styles/signup.css";
 
-function Login() {
+function Login({ setIsLoading }) {
   
   const { register, handleSubmit, control, formState, setValue } = useForm();
   const { errors } = formState;
@@ -35,6 +35,7 @@ function Login() {
       });
       return;
     }
+    setIsLoading(true);
     
     axios.get("/api/users/login", { 
       params: { email, password },
@@ -54,6 +55,8 @@ function Login() {
         open: true,
         message: error.message,
       });
+    }).finally(() => {
+      setIsLoading(true);
     });
   };
   

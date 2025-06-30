@@ -6,7 +6,7 @@ import Toster from "../../ui components/Toster";
 import "../../styles/signup.css";
 
 
-function SignUp() {
+function SignUp({ setIsLoading }) {
   const { register, handleSubmit, control, formState, watch } = useForm();
   const { errors } = formState;
   const [toster, setToster] = React.useState({
@@ -45,6 +45,7 @@ function SignUp() {
     formData.append("email", email);
     formData.append("password", password);
 
+    setIsLoading(true);
     axios.post("/api/users/register", formData, config)
       .then((response) => {
         sessionStorage.setItem("user", JSON.stringify(response.data.user));
@@ -61,6 +62,8 @@ function SignUp() {
           open: true,
           message: error.message,
         });
+      }).finally(() => {
+        setIsLoading(false);
       });
   };
 
